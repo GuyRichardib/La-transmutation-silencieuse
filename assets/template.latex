@@ -1,36 +1,11 @@
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(classoption)$$classoption$$endif$]{$documentclass$}
 
-% --- Paquets essentiels de Pandoc ---
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{iftex}
-\ifxetex
-  \usepackage{fontspec}
-\else
-  \usepackage[utf8]{inputenc}
-  \usepackage{fontenc}
-  \usepackage{textcomp}
-\fi
-\usepackage{lmodern}
-\usepackage{graphicx}
-\usepackage{longtable}
-\usepackage{booktabs}
-\usepackage{array}
-\usepackage{hyperref}
-\hypersetup{
-  pdftitle={$title$},
-  pdfauthor={$author$},
-  hidelinks,
-  colorlinks=false,
-  breaklinks=true
-}
-
-% --- Personnalisation de la mise en page ---
 \usepackage{geometry}
 $for(geometry)$
 \geometry{$geometry$}
 $endfor$
 
+\usepackage{fontspec}
 $if(mainfont)$
 \setmainfont{$mainfont$}
 $endif$
@@ -44,13 +19,16 @@ $endif$
 \pagestyle{fancy}
 \fancyhf{}
 $if(header-left)$
-\fancyhead[LE,RO]{\textit{$header-left$}}
+\fancyhead[LE]{$header-left$}
 $endif$
 $if(header-right)$
-\fancyhead[RE,LO]{\textit{$header-right$}}
+\fancyhead[RO]{$header-right$}
+$endif$
+$if(footer-left)$
+\fancyfoot[LE]{$footer-left$}
 $endif$
 $if(footer-right)$
-\fancyfoot[CE,CO]{$footer-right$}
+\fancyfoot[RO]{$footer-right$}
 $endif$
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
@@ -66,9 +44,6 @@ $endif$
 \begin{document}
 
 $if(title)$
-\title{$title$}
-\author{$author$}
-\date{$date$}
 \maketitle
 $endif$
 
