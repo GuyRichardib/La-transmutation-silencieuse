@@ -1,36 +1,36 @@
--- scripts/include-files.lua
--- Filtre Pandoc pour remplacer les directives @include(path/to/file.md)
--- Version robuste : résout chemins, essaie plusieurs candidats, affiche logs clairs.
-
+-- scripts/include-files.lua  (robuste + traçage)
 local utils = require 'pandoc.utils'
 local path  = require 'pandoc.path'
 
 local include_pat = '^%s*@include%((.-)%)%s*$'
 
--- Détermine le répertoire de base à partir du fichier d'entrée si possible
+-- BASE_DIR déterminé de façon sûre et traçable
 local function detect_base_dir()
+  local base = '.'
   if PANDOC_STATE and PANDOC_STATE.input_files and #PANDOC_STATE.input_files > 0 then
-    local base = path.directory(PANDOC_STATE.input_files[1])
-    if base == '' then return '.' end
-    return base
+    base = path.directory(PANDOC_STATE.input_files[1])
+    if base == '' then base = '.' end
   end
-  -- fallback : dossier 'book' si tu sais que c'est là que se trouvent les includes
-  -- return 'book'
-  return '.'
+  io.stderr:write(string.format('[include-files] BASE_DIR=%q\n', base))
+  return base
 end
 
 local BASE_DIR = detect_base_dir()
 
 local function candidates_for(p)
-  p = tostring(p or ''):gsub('^%s+', ''):gsub('%s+$', '')          -- trim
-  p = p:gsub("^['\"]", ""):gsub("['\"]$", "")             -- remove quotes if any
-  local c = {}
-  if p ~= '' then
-    table.insert(c, p)                                      -- as provided (relative to cwd)
-    table.insert(c, path.normalize(path.join({BASE_DIR, p}))) -- relative to base_dir (common)
-    table.insert(c, path.normalize(path.join({BASE_DIR, 'manuscript', p}))) -- try book/manuscript/...
-    table.insert(c, path.normalize(path.join({'.', p})))   -- repo-root relative
+  p = tostring(p or ''):gsub('^%s+',''):gsub('%s+$','')
+  p = p:gsub("^['\"]", ''):gsub("['\"]$", '')
+  if p == '' then
+    return {}
   end
+  local c = {
+    p,
+    path.normalize(path.join({BASE_DIR, p})),
+    path.normalize(path.join({BASE_DIR, 'manuscript', p})),
+    path.normalize(path.join({'.', p})),
+    path.normalize(path.join({'book', p})),
+    path.normalize(path.join({'book', 'manuscript', p})),
+  }
   return c
 end
 
@@ -42,57 +42,45 @@ local function file_exists(fname)
 end
 
 local function resolve_to_existing(p)
-  if not p or p == '' then
-    return nil, {}
-  end
-  local tried = {}
+  local tried, chosen = {}, nil
   for _, cand in ipairs(candidates_for(p)) do
     if cand and cand ~= '' then
       table.insert(tried, cand)
-      if file_exists(cand) then
-        return cand, tried
-      end
+      if file_exists(cand) then chosen = cand; break end
     end
   end
-  return nil, tried
+  return chosen, tried
 end
 
 local function read_blocks_from_file(include_path)
   if type(include_path) ~= 'string' or include_path == '' then
-    io.stderr:write("include-files.lua: include_path is not a valid string: " .. tostring(include_path) .. "\n")
+    io.stderr:write('[include-files] include_path invalide: '..tostring(include_path)..'\n')
     os.exit(1)
   end
-
   local resolved, tried = resolve_to_existing(include_path)
   if not resolved then
-    io.stderr:write(string.format("include-files.lua: cannot open %q\nTried: %s\n",
-      include_path,
-      table.concat(tried, " ; ")))
-    os.exit(1) -- fail fast so CI signale l'emplacement exact manquant
+    io.stderr:write(('[include-files] introuvable: %q\nTried:\n  - %s\n')
+      :format(include_path, table.concat(tried, '\n  - ')))
+    os.exit(1)
   end
-
-  -- lecture et parsing
+  io.stderr:write(('[include-files] OK: %q -> %q\n'):format(include_path, resolved))
   local fh, err = io.open(resolved, 'r')
   if not fh then
-    io.stderr:write('include-files.lua: cannot open resolved file '..resolved..' : '..tostring(err)..'\n')
+    io.stderr:write('[include-files] io.open a échoué pour '..tostring(resolved)..' : '..tostring(err)..'\n')
     os.exit(1)
   end
   local content = fh:read('*a'); fh:close()
-  local reader_opts = nil
-  if PANDOC_STATE and PANDOC_STATE.reader_options then reader_opts = PANDOC_STATE.reader_options end
+  local reader_opts = (PANDOC_STATE and PANDOC_STATE.reader_options) or nil
   local parsed = pandoc.read(content, 'markdown', reader_opts)
   return parsed.blocks
 end
 
 local function maybe_include_from_block(blk)
-  -- RawBlock in markdown form (e.g., a literal line `@include(...)`)
   if blk.t == 'RawBlock' and blk.format == 'markdown' then
-    local inc = blk.text:match(include_pat)
+    local inc = blk.text and blk.text:match(include_pat)
     if inc then return read_blocks_from_file(inc) end
     return nil
   end
-
-  -- For Para or Plain, stringify content and match
   if blk.t == 'Para' or blk.t == 'Plain' then
     local raw = utils.stringify(blk)
     if raw then
@@ -100,11 +88,9 @@ local function maybe_include_from_block(blk)
       if inc then return read_blocks_from_file(inc) end
     end
   end
-
   return nil
 end
 
--- Export filter: handle Para, Plain and RawBlock
 return {
   {
     Para     = maybe_include_from_block,
