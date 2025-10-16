@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -x
 
 mkdir -p dist
 
@@ -14,13 +15,6 @@ PDF_ARGS=(
   --template=assets/template.latex
 )
 
-echo "Building EPUB..."
 pandoc book/book.md -o dist/book.epub "${COMMON_ARGS[@]}"
-
-echo "Building PDF (KDP Format)..."
 pandoc book/book.md -o dist/book.pdf "${COMMON_ARGS[@]}" "${PDF_ARGS[@]}"
-
-echo "Building DOCX..."
 pandoc book/book.md -o dist/book.docx "${COMMON_ARGS[@]}"
-
-echo "Build complete."

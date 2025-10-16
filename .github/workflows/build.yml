@@ -11,6 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,7 +19,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.11"
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -33,68 +34,13 @@ jobs:
             texlive-fonts-extra \
             fonts-ebgaramond \
             poppler-utils
-
-          # Mettre à jour le cache des polices du système pour que XeLaTeX la trouve
           sudo fc-cache -f -v
 
-      - name: Sanity check font is installed
-        run: fc-list | grep -i "eb garamond" || (echo "Police EB Garamond non trouvée" && exit 1)
+      - name: Preflight - verify @include targets
+        run: python3 scripts/verify_includes.py .
 
       - name: Count words
         run: python3 scripts/wordcount.py
-
-      - name: Sanity – show include filter
-        run: |
-          echo "===== scripts/include-files.lua (HEAD) ====="
-          nl -ba scripts/include-files.lua | sed -n '1,200p'
-          echo "Git SHA: $(git rev-parse HEAD)"
-          ls -la book book/manuscript || true
-
-      - name: Preflight – verify @include targets exist
-        run: |
-          set -euo pipefail
-          echo "Scanning @include(...) targets..."
-          python3 - <<'PY'
-import pathlib
-import re
-import sys
-
-root = pathlib.Path('.').resolve()
-files = [root / 'book' / 'book.md']
-manuscript_dir = root / 'book' / 'manuscript'
-if manuscript_dir.is_dir():
-    files.extend(sorted(manuscript_dir.glob('*.md')))
-
-pattern = re.compile(r'@include\(([^)]+)\)')
-missing = []
-
-def candidates(target: str):
-    target = target.strip().strip("'\"")
-    return [
-        root / target,
-        root / 'book' / target,
-        root / 'book' / 'manuscript' / target,
-    ], target
-
-for path in files:
-    if not path.exists():
-        continue
-    for lineno, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
-        for match in pattern.finditer(line):
-            cand, cleaned = candidates(match.group(1))
-            if any(c.exists() for c in cand):
-                print(f"OK   {path.relative_to(root)}:{lineno} -> {cleaned}")
-            else:
-                print(f"MISS {path.relative_to(root)}:{lineno} -> {cleaned}")
-                missing.append((path, lineno, cleaned, cand))
-
-if missing:
-    for _, _, cleaned, cand in missing:
-        tried = '\n  - '.join(str(c.relative_to(root)) for c in cand)
-        print(f"Candidates tried for {cleaned}:\n  - {tried}")
-    print(f"Missing {len(missing)} include target(s).", file=sys.stderr)
-    sys.exit(1)
-PY
 
       - name: Build all formats
         run: |
@@ -105,7 +51,7 @@ PY
         run: |
           echo "Vérification des dimensions du PDF..."
           pdfinfo dist/book.pdf | grep "Page size"
-          pdfinfo dist/book.pdf | grep "Page size: *432 x 648" || (echo "ERREUR: Le PDF n'est pas au format 6x9 KDP." && exit 1)
+          pdfinfo dist/book.pdf | grep -E "Page size:\s*432 x 648" || (echo "ERREUR: Le PDF n'est pas au format 6x9 KDP." && exit 1)
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
