@@ -13,10 +13,11 @@ local function resolve_path(include_path)
   if path.is_absolute(include_path) then
     return include_path
   end
-  return path.normalize(path.join({base_dir, include_path}))
+  return path.normalize(path.join({ base_dir, include_path }))
 end
 
-local function read_file(filename)
+local function read_blocks(include_path)
+  local filename = resolve_path(include_path)
   local fh, err = io.open(filename, 'r')
   if not fh then
     io.stderr:write('include-files.lua: cannot open ' .. filename .. ': ' .. (err or '') .. '\n')
@@ -24,59 +25,38 @@ local function read_file(filename)
   end
   local contents = fh:read('*a')
   fh:close()
-  return contents
-end
-
-local function include_file(include_path)
-  local filename = resolve_path(include_path)
-  local contents = read_file(filename)
-  local reader_format = 'markdown'
   local reader_options = nil
   if PANDOC_STATE then
     reader_options = PANDOC_STATE.reader_options
   end
-  local parsed = pandoc.read(contents, reader_format, reader_options)
+  local parsed = pandoc.read(contents, 'markdown', reader_options)
   return parsed.blocks
 end
 
-local include_pattern = '^@include%(([^)]+)%)$'
+local include_pattern = '^@include%((.-)%)$'
 
-local function handle_block(el)
-  local raw = utils.stringify(el)
-  local include_path = raw:match(include_pattern)
-  if not include_path then
-    return nil
+local function extract_include(blk)
+  if blk.t == 'RawBlock' and blk.format == 'markdown' then
+    return blk.text:match(include_pattern)
   end
-  local blocks = include_file(include_path)
-  return blocks
+  if blk.t == 'Para' or blk.t == 'Plain' then
+    local raw = utils.stringify(blk)
+    if raw then
+      return raw:match(include_pattern)
+    end
+  end
+  return nil
 end
 
-function Para(el)
-  local blocks = handle_block(el)
-  if blocks then
-    return blocks
+function Pandoc(doc)
+  local out = pandoc.List()
+  for _, blk in ipairs(doc.blocks) do
+    local include_path = extract_include(blk)
+    if include_path then
+      out:extend(read_blocks(include_path))
+    else
+      out:insert(blk)
+    end
   end
+  return pandoc.Pandoc(out, doc.meta)
 end
-
-function Plain(el)
-  local blocks = handle_block(el)
-  if blocks then
-    return blocks
-  end
-end
-
-function RawBlock(el)
-  if el.format ~= 'markdown' then
-    return nil
-  end
-  local include_path = el.text:match(include_pattern)
-  if not include_path then
-    return nil
-  end
-  local blocks = include_file(include_path)
-  return blocks
-end
-
-return {
-  { Para = Para, Plain = Plain, RawBlock = RawBlock }
-}

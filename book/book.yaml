@@ -1,11 +1,10 @@
 title: "Le Secret de la Transmutation Silencieuse"
 author:
   - "Anonyme"
-date: "2025-01-01"
 lang: fr
 toc: true
 toc-depth: 2
-number-sections: true
+number-sections: false
 epub-metadata: styles/epub-metadata.xml
 epub-stylesheet: styles/epub.css
 documentclass: "book"

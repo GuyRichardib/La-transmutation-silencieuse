@@ -1,1 +1,1 @@
-# Le Secret de la Transmutation Silencieuse
+<!-- Intentionally left blank; title page handled by template -->

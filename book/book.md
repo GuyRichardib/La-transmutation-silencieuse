@@ -1,7 +1,3 @@
-% Title: Le Secret de la Transmutation Silencieuse
-% Author: Anonyme
-% Date: 2025-01-01
-
 \newpage
 @include(manuscript/00-frontmatter.md)
 \newpage
