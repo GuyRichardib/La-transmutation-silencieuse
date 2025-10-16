@@ -50,6 +50,23 @@ local function resolve_to_existing(p)
   return chosen, tried
 end
 
+local function current_reader_format()
+  local f = (PANDOC_STATE and PANDOC_STATE.input_format) or 'markdown'
+  if not f:match('raw_tex') then
+    f = f .. '+raw_tex'
+  end
+  return f
+end
+
+local function read_md_fragment(s)
+  if not s or s == '' then
+    return pandoc.List:new()
+  end
+  local fmt = current_reader_format()
+  local opts = (PANDOC_STATE and PANDOC_STATE.reader_options) or nil
+  return pandoc.read(s, fmt, opts).blocks
+end
+
 local function read_blocks_from_file(include_path)
   if type(include_path) ~= 'string' or include_path == '' then
     io.stderr:write('[include-files] include_path invalide: '..tostring(include_path)..'\n')
@@ -68,9 +85,30 @@ local function read_blocks_from_file(include_path)
     os.exit(1)
   end
   local content = fh:read('*a'); fh:close()
-  local reader_opts = (PANDOC_STATE and PANDOC_STATE.reader_options) or nil
-  local parsed = pandoc.read(content, 'markdown', reader_opts)
-  return parsed.blocks
+  return read_md_fragment(content)
+end
+
+local function expand_includes_in_text(txt)
+  local out = pandoc.List:new()
+  local any = false
+
+  local i = 1
+  for s, target, e in txt:gmatch('()@include%((.-)%)()') do
+    local before = txt:sub(i, s - 1)
+    if before and before:match('%S') then
+      out:extend(read_md_fragment(before))
+    end
+    out:extend(read_blocks_from_file(target))
+    any = true
+    i = e
+  end
+
+  local tail = txt:sub(i)
+  if tail and tail:match('%S') then
+    out:extend(read_md_fragment(tail))
+  end
+
+  if any then return out else return nil end
 end
 
 local function expand_includes_in_text(txt)
