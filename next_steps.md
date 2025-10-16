@@ -31,7 +31,7 @@
 2. **La fréquence est-elle juste ?**
 3. **L'énergie monte-t-elle ?**
 
-Créer `journal_sprints.md` dans `book/` pour archiver ces revues.
+Créer `journal_sprints.md` pour archiver ces revues.
 
 ## 3. Préparation à l'Ingénierie de Publication
 - **Broché 6x9 pouces**

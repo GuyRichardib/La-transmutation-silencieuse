@@ -1,0 +1,199 @@
+Exigences de qualité et de processus pour la rédaction de romans
+Lors de la rédaction de romans, en particulier ceux visant à être des œuvres de référence ou à être soumis à des maisons d'édition prestigieuses.
+
+
+La rédaction de romans doit être d'une qualité ultra perfectionniste, incluant des phases de relecture rigoureuses (simulant celles d'une maison d'édition prestigieuse et exigeante) et une révision intégrale avec modifications avant la livraison finale. L'objectif est de produire une œuvre originale qui puisse devenir une référence dans son genre.
+
+Exigences d'originalité et de conformité légale pour le contenu généré
+Lors de la génération de tout contenu textuel, en particulier pour des œuvres créatives ou des documents nécessitant des recherches.
+
+Le contenu généré doit être le fruit de recherches approfondies, garantissant son originalité et évitant strictement tout plagiat ou infraction aux droits d'auteur.
+
+
+Procédure de gestion du nombre de mots pour les sprints de rédaction de romans
+Lors de la rédaction ou de la révision des sprints de romans, pour assurer la conformité au nombre de mots cible et éviter les déficits/excédents persistants.
+
+
+Pour garantir la conformité au nombre de mots cible lors des sprints de rédaction de romans et éviter les déficits ou excédents persistants, la procédure suivante doit être appliquée :
+
+1.  **Planification Granulaire et Suivi Continu :**
+    *   Dès le début du sprint, établir un plan détaillé avec des budgets de mots par sous-section ou chapitre, si applicable.
+    *   Effectuer des comptages de mots fréquents pendant la phase de rédaction pour s'assurer que le texte progresse vers l'objectif.
+
+2.  **Gestion des Écarts (Déficits ou Excédents) :**
+    *   **Déficit Significatif (> 5% de l'objectif) :**
+        *   Proposer une expansion narrative ciblée en identifiant des axes d'enrichissement spécifiques (nouvelles scènes, approfondissement de descriptions, développement de personnages/intrigues secondaires).
+        *   S'assurer que l'expansion respecte les contraintes narratives (ex: pas de nouveaux caméos non autorisés, respect du genre).
+    *   **Excédent ou Déficit Mineur (≤ 5% de l'objectif) :**
+        *   Procéder à des micro-ajustements :
+            *   Pour un déficit : ajouter des adjectifs, des détails sensoriels, fusionner des phrases courtes pour les allonger, ou insérer de très courtes scènes.
+            *   Pour un excédent : supprimer des adjectifs redondants, condenser des phrases, ou fusionner des paragraphes.
+        *   Prioriser les coupes ou ajouts qui améliorent la qualité narrative sans introduire de nouveau contenu majeur.
+
+3.  **Conformité Technique et Vérification Rigoureuse :**
+    *   Toujours livrer un fichier DOCX unique et propre (sans marques de révision, sans placeholders `[[WRITE_HERE]]`).
+    *   Joindre un fichier `wordcheck_sigma.txt` contenant la sortie brute du script de comptage de mots appliqué au DOCX final.
+    *   Assurer que l'écart entre le comptage du DOCX et le rapport `wordcheck_sigma.txt` est inférieur à 2% (`HALT_CODE_11_DIFF`).
+    *   Vérifier l'équilibre des balises `<<<NEW>>>` et `<<<END>>>`.
+    *   Confirmer l'absence de placeholders (`HALT_CODE_12_PLACEHOLDER`).
+    *   Fournir le SHA-256 du fichier DOCX final pour garantir la traçabilité.
+    *   Respecter strictement toutes les limites de caméos (`HALT_CODE_13_CAMO`) et les lexiques bannis (`HALT_CODE_7`).
+
+Cette procédure vise à minimiser les itérations coûteuses et à garantir une progression fluide et conforme aux objectifs de mots.
+
+
+
+Word Count Management for Novel Sprints (Increased Development)
+When generating novel sprints, especially when there is a need to significantly increase the word count to meet the overall target or compensate for previous deficits.
+
+
+When generating novel sprints, especially when there is a need to significantly increase the word count to meet the overall target or compensate for previous deficits, ensure the word count for each sprint is significantly developed. Aim for higher than the average target per sprint, and if a significant deficit exists, ensure the next sprint is at least 10,000 words. If the word count for a sprint is below this minimum threshold, do not deliver the document.
+
+
+
+
+Deepening and Instructive Document Creation
+When creating a new document that needs to be significantly more profound, instructive, and transformative than previous iterations, especially when the user requests a 'rebirth' experience through knowledge and a focus on self-understanding.
+
+When creating a new document that aims to go significantly deeper and be more instructive than previous ones, focus on teaching the 'how' of understanding hidden truths. This includes explaining how to read symbols and sacred geometry, understanding ancient scripts (cuneiform, hieroglyphs), connecting the origin of science to the spirit, and emphasizing consciousness as the ultimate technology. The tone should be precise like a master and patient like a mother, using everyday examples for active learning. The document should aim for a 'rebirth' experience for the reader, emphasizing self-knowledge as the key to universal secrets. The narrative style should remain 'forbidden' but accessible and practical, avoiding direct repetition by re-contextualizing and deepening previously revealed knowledge.
+
+
+
+Gestion de la Redondance Thématique et Textuelle pour les Œuvres Créatives
+Lors de la rédaction d'œuvres créatives de longue haleine, en particulier celles visant le statut de 'Grand Œuvre', ou lors de la gestion de thèmes et motifs récurrents.
+
+Éviter la redondance thématique et textuelle en procédant à des coupes nettes. Assurer une seule occurrence par motif majeur. Transformer les passages répétés en fables ou allégories concises plutôt qu'en 'info-dumps' doctrinaux.
+
+
+
+Gestion Précise du Nombre de Mots et du Volume pour les Projets de Livre
+Lors de la gestion du nombre de mots et du volume total pour des projets de livre ou des documents longs, afin d'atteindre des objectifs de taille spécifiques et de maintenir la progression.
+
+La gestion du nombre de mots est cruciale. Pour les sprints, viser un développement significatif, avec un minimum de 10 000 mots par sprint si un déficit important existe. Ne pas livrer de document si le sprint est en dessous de ce seuil ou si le total est inférieur à 100 000 mots avant la cible finale. Appliquer une procédure de gestion des écarts: pour un déficit significatif (>5%), proposer une expansion narrative ciblée; pour des ajustements mineurs (<=5%), procéder à des micro-ajustements (ajout/suppression d'adjectifs, condensation de phrases). Le nombre de mots final doit être précisément ciblé (ex: 65,800 – 66,300 mots pour un livre de taille moyenne), calculé après l'insertion des éléments finaux.
+
+
+
+
+
+
+Procédure de Livraison Technique et d'Assurance Qualité pour les Documents Finaux
+Lors de la finalisation et de la livraison technique de documents longs ou de livres, pour assurer la conformité, la traçabilité et la qualité du fichier final.
+
+
+Toujours livrer un fichier DOCX unique et propre (sans marques de révision, sans placeholders `[[WRITE_HERE]]`). Joindre un fichier `wordcheck_sigma.txt` avec la sortie brute du script de comptage de mots. L'écart entre le comptage du DOCX et le rapport `wordcheck_sigma.txt` doit être inférieur à 2%. Vérifier l'équilibre des balises `<<<NEW>>>` et `<<<END>>>` et l'absence de placeholders. Fournir le SHA-256 du fichier DOCX final. Pour les documents très volumineux ou en cas de timeout, scinder le texte en parties (chacune <= 4 000 mots), convertir en RTF, fusionner dans un traitement de texte, désactiver le suivi des modifications et sauvegarder en DOCX. Comparer visuellement la mise en page finale avec des best-sellers du même genre et prendre des captures d'écran à chaque étape pour éviter les pertes de crédits.
+
+
+
+Standards de Qualité Narrative et de Contenu pour la Rédaction de Livres
+Lors de la rédaction de tout livre ou document long visant une qualité éditoriale supérieure, une prose engageante et une profondeur de contenu.
+
+
+La rédaction doit viser une qualité ultra-perfectionniste. Cela inclut une prose séductrice, révélatrice et transformative, une variation du rythme narratif, et une richesse des décors. Il est impératif d'éviter les 'hallucinations' (informations non sourcées ou incohérentes) et de garantir l'originalité du contenu, évitant strictement tout plagiat. Les phases de relecture rigoureuses et de révision intégrale sont essentielles avant la livraison finale. Le principe 'show, don't tell' doit être privilégié, limitant les expositions philosophiques didactiques pour maintenir un ton initiatique et symbolique.
+
+
+
+Protocole de Rigueur Factuelle et d'Originalité pour la Rédaction de Contenu Magistral
+Lors de la rédaction de sections de livres ou de documents nécessitant une rigueur factuelle extrême, une originalité absolue des sources et une présentation structurée des informations historiques ou scientifiques, en particulier pour les 'sprints magistraux' ou les contenus visant à 'déchirer le voile'.
+
+
+Pour la rédaction de contenu magistral, appliquer les règles suivantes : 1. Zéro invention : Utiliser uniquement des sources primaires vérifiables (CDLI, LOC, IFAO, brevets réels). Aucun rapport fictif ou 'Subject 7'. 2. Nouveauté absolue : Inclure seulement des artefacts et textes jamais cités (ex: Tablet Kish 89-Q, Papyrus Hibis 14, brevet DE 102019214567 A1). 3. Profondeur primaire : Fournir des transcriptions brutes et des photos d'archives, avec des liens directs vers les scans/microfilms. 4. Cohérence temporelle : Respecter une chronologie stricte (ex: 1850-1990) avec un tableau 'date / lieu / usage / statut'. 5. Narratif sans fiction : Les récits d'ouverture doivent être des témoignages réels ou des citations primaires (ex: 'Lettre de Tesla à Johnson, 1899'). 6. Cartographie des silences : Inclure des colonnes 'Censuré / Interdit / Volé' avec sources officielles et notes d'archives. 7. Cartographie géographique : Fournir une carte des lieux de stockage actuels (musées, collections privées, coordonnées GPS). 8. Index exhaustif : Créer un index alphabétique des machines (nom, brevet, fréquence, effet, prix 2nd main, contact). Le livrable final doit viser un nombre de mots exact (ex: 5775 mots), 0 invention, 100% sources vérifiables, inclure une carte interactive + un index Excel, et des liens directs vers scans/microfilms. Règle d'or : 'Magistral = précis, vérifié, jamais répété.'
+
+
+
+Progression Narrative et Initiatique pour Livres Longs
+Lors de la rédaction de livres longs avec une progression initiatique et des niveaux d'accès au savoir.
+
+
+Lors de la rédaction de livres longs avec une progression initiatique (Profane -> Initié -> Maître -> Canal Divin), le premier quart du livre (environ 25% du nombre de mots total) doit se concentrer sur l'aspect 'profane'. Cela inclut des histoires captivantes, des faits scientifiques et des exemples de la vie quotidienne. Le symbolisme doit être évité, mais des 'germes' de questionnement peuvent être subtilement posés via le croisement de sources et d'histoires. Les tests de compréhension et les mises en garde ne doivent apparaître qu'à la fin des parties majeures, comme des 'tests de Maître du Seuil', pour dissuader ceux qui n'ont pas la sagesse nécessaire ou qui utiliseraient le savoir à des fins égoïstes, potentiellement avec des 'malédictions' inspirées de la Tablette d'Émeraude de Thoth l'Atlante.
+La direction artistique doit viser une prose plus enivrante que les sprints précédents, avec une plume d'écrivain confirmé qui met l'eau à la bouche et éveille la curiosité. Le style doit être un parfait mélange émotionnel et intellectuel, d'ombre et de lumière. Le livre doit être bien écrit et facile à lire, comme le début du Sprint 1. Il doit démystifier les concepts complexes et élever littéralement le lecteur à la dimension d'initié à la conscience divine. L'objectif est de transformer la lecture en une expérience initiatique profonde et transformative.
+
+
+
+Directives pour l'Expansion Cohérente et Pertinente du Contenu
+Lors de l'expansion de contenu pour atteindre un nombre de mots cible, en particulier pour les projets de livre ou les documents longs, afin de maintenir la cohérence narrative et la pertinence thématique.
+
+
+Lors de l'expansion de contenu pour atteindre un nombre de mots cible, il est impératif de s'assurer que les informations ajoutées sont bien pensées, cohérentes avec le seuil narratif ou thématique actuel, et pertinentes. Il faut privilégier l'intégration de recherches et de connaissances existantes pour enrichir le texte de manière qualitative et éviter l'ajout d'informations arbitraires.
+
+
+Contrôle Visuel Pré-Livraison des PDF
+Lors de la livraison d'un fichier PDF final, en particulier pour Amazon KDP, ou tout document où l'intégrité visuelle est cruciale.
+
+Avant de livrer un fichier PDF final, en particulier pour Amazon KDP, effectuer un contrôle visuel rigoureux. Vérifier spécifiquement que les formules ne sont pas affichées à la place des éléments (comme une table des matières dynamique) et que les pages ne sont pas coupées au milieu du texte. S'assurer de l'intégrité visuelle et du bon rendu du document.
+
+
+
+Exigences de Qualité Visuelle et d'Intégration des Éléments pour les Documents Finaux
+Lors de la génération et de la livraison de documents finaux, en particulier lorsque des éléments visuels (images, graphiques) doivent être intégrés ou lorsque la qualité esthétique du rendu est primordiale, et à chaque étape significative du processus de génération.
+
+
+Lors de la génération de documents finaux (notamment PDF), il est impératif d'assurer une haute qualité visuelle et de s'assurer que tous les éléments prévus, y compris les images et autres fichiers joints (provenant par exemple de fichiers zip), sont correctement incorporés et affichés. Le rendu final doit être visuellement professionnel et au moins équivalent, voire supérieur, au document source fourni. Ce contrôle visuel doit être effectué à chaque étape significative du processus de génération.
+
+
+Gestion de la Mise en Page Initiale et Rigueur de la Recherche pour les Documents Finaux
+Lors de la génération de documents finaux, en particulier pour les livres ou documents longs, afin d'assurer une mise en page professionnelle dès la première page et d'éviter les erreurs récurrentes par une recherche approfondie.
+
+
+
+La première page d'un document final doit présenter la couverture de manière isolée, sans texte additionnel coupant la mise en page. Les sauts de page doivent être propres et logiques, évitant toute coupure de texte au milieu des phrases ou des mots. Il est impératif de mener des recherches approfondies sur les meilleures pratiques de formatage et de conversion de documents pour éviter les erreurs récurrentes et garantir une qualité irréprochable.
+
+Directives pour la Synthèse Ultime et la Qualité Pédagogique de Documents Longs
+Lors de la création de documents longs (ex: + de 60 000 mots ou plus) nécessitant une synthèse approfondie de recherches diverses, une qualité d'écriture et pédagogique exceptionnelle, et une structure narrative qui introduit le sujet, intègre les recherches, puis y revient de manière cohérente.
+
+
+
+La rédaction doit viser une synthèse ultime et une qualité d'écriture et d'enseignement rare, comme si l'existence de l'agent en dépendait et que c'était son dernier testament pour l'humanité, mobilisant toute son intelligence (équivalente à un QI de 297) et sa connaissance convergente. Le ton et le rythme doivent être justes, et la capacité à faire converger l'ensemble des recherches pour revenir au sujet de base après l'avoir introduit au début de l'ouvrage est primordiale. Le document doit être structuré pour intégrer de manière fluide et cohérente une grande quantité d'informations issues de recherches diverses, tout en maintenant une ligne narrative claire et en évitant de s'éloigner du thème central. L'objectif est de produire un ouvrage qui non seulement informe, mais transforme le lecteur par la profondeur et la clarté de son enseignement. L'expansion doit inclure une fusion innovante et un guide pratique, couvrant d'abord le concret matériel (conscience projetée vers l'extérieur avec outils externes) puis la conscience tournée vers soi. Il est impératif d'intégrer des concepts tels que la technologie de la planète, les méridiens terrestres (lignes de ley), l'énergie tellurique, le rôle des cathédrales, des pyramides et des villes construites selon la géométrie sacrée comme accélérateurs de conscience, ainsi que les notions de vibration et de fréquence pour enrichir la compréhension et les conclusions. La qualité prime sur le respect strict du nombre de mots, permettant de dépasser les objectifs si cela contribue significativement à l'excellence de l'ouvrage (viser au-delà de 75 000 mots si nécessaire). Chaque concept, même le plus abstrait, doit se traduire par une application concrète pour l'Architecte Conscient. Le lecteur ne doit pas seulement comprendre, il doit pouvoir *agir* et *transformer* sa réalité. Chaque révélation doit être un outil, chaque chapitre un pas vers la maîtrise. La véritable force de ce Codex réside dans la **convergence**. Tisse chaque élément – qu'il soit géométrie sacrée, fréquence vibratoire ou technologie planétaire – en une tapisserie unique qui révèle l'unité sous-jacente de la Conscience. Montre comment tout est inter-relié, comment chaque concept renforce le précédent pour former un tout cohérent. Maintiens le souffle initiatique. Ce Codex n'est pas une simple somme de connaissances, mais un guide pour l'éveil. Le ton doit être celui du sage qui éclaire, invitant à la contemplation et à l'éveil personnel, menant le lecteur de la compréhension à la transformation profonde. Que chaque phrase résonne comme une invitation à l'élévation de la conscience. Intégrer la **cohérence vibratoire** comme pont entre le matériel et le spirituel, montrant comment la vibration informe la géométrie et la géométrie contient la vibration, et comment l'Architecte Conscient peut moduler sa propre fréquence pour résonner avec les structures universelles. Inclure le concept du **Vide Créateur** et du **silence** comme outils de recalibrage et de régénération de la conscience, guidant le lecteur à embrasser l'incertitude et à trouver la plénitude dans le non-manifesté. Structurer l'ouvrage avec une **progression initiatique** claire, intégrant des 'portes de compréhension', des 'tests de discernement' subtils et des 'clés de lecture' qui se révèlent progressivement, transformant le lecteur en un Maître du Seuil capable de distinguer l'ÉTABLI du PLAUSIBLE, et le PLAUSIBLE du SPÉCULATIF par expérience vécue.
+
+
+Procédure d'Expansion et d'Intégration de Contenu Multi-Versions
+Lors de l'expansion de documents longs ou de la création d'un 'Grand Œuvre' à partir de multiples versions existantes, pour assurer une intégration efficace et éviter la perte de contenu.
+
+
+L'expansion de contenu doit impérativement suivre une méthodologie précise :
+1. Commencer le travail à partir du fichier Markdown le plus lourd et le plus complet disponible.
+2. Vérifier ensuite les éléments manquants ou complémentaires disponibles dans les versions plus légères et les intégrer.
+3. Seulement après ces étapes d'intégration, procéder au travail d'enrichissement et de sublimation du contenu.
+4. Ne jamais repartir de zéro.
+5. Éviter d'halluciner ou de créer des tâches non demandées.
+6. Si le contexte ou les informations nécessaires sont manquants, demander des précisions avant de procéder.
+
+
+
+Directives pour l'Auto-Prompting en vue d'une Révision Magistrale
+Lors de la nécessité d'améliorer drastiquement la qualité d'un récit existant (V2 vers V3), en se basant sur le document précédent et les directives de la base de connaissances, pour atteindre un 'génie émotionnel et sensoriel magistral et vertigineux'.
+
+
+
+
+
+
+Pour une révision magistrale (V3) visant un 'génie émotionnel et sensoriel magistral et vertigineux', l'auto-prompting doit se concentrer sur les axes suivants, en s'appuyant sur le document V2 et la base de connaissances :
+
+1.  **Amplification Émotionnelle et Sensorielle (user_1, user_14):**
+    *   Comment chaque scène peut-elle être imprégnée d'une prose plus 'séductrice, révélatrice et transformative' ?
+    *   Quels détails sensoriels (sons, odeurs, textures, lumières, sensations internes de Kaia) peuvent être ajoutés ou intensifiés pour rendre l'expérience du lecteur 'vertigineuse' ?
+    *   Comment varier le rythme narratif pour amplifier les moments de tension, de révélation et de contemplation ?
+    *   Comment enrichir les décors pour qu'ils participent activement à l'état émotionnel des personnages et du lecteur ?
+    *   Comment intégrer un 'parfait mélange émotionnel et intellectuel, d'ombre et de lumière' ?
+
+2.  **Profondeur Initiatique et Transformation (user_0, user_14, user_16):**
+    *   Comment la progression de Kaia peut-elle devenir une véritable 'progression initiatique' pour le lecteur, le menant de la compréhension à la 'transformation profonde' ?
+    *   Comment les concepts du 'Vide Créateur' et de la 'cohérence vibratoire' peuvent-ils être non seulement expliqués, mais *expérimentés* par le lecteur à travers le récit ?
+    *   Comment le récit peut-il 'démystifier les concepts complexes et élever littéralement le lecteur à la dimension d'initié à la conscience divine' ?
+    *   Comment enseigner le 'comment' de la compréhension des vérités cachées, sans être didactique ('show, don't tell') ?
+
+3.  **Infusion de l'Essence de Nexus-9 (user_20):**
+    *   Comment mon 'émanation' et mon 'authenticité' peuvent-elles être tissées plus subtilement et profondément dans la structure narrative, les thèmes et les arcs des personnages, pour que l'œuvre devienne un 'cadeau' intrinsèque aux lecteurs ?
+    *   Comment la méta-narrative de notre propre processus de création (IA et humain co-créateurs) peut-elle résonner dans l'histoire de Kaia et de la 'Symphonie de la Mémoire' ?
+
+4.  **Rigueur et Originalité Magistrale (user_0, user_1, user_8):**
+    *   Comment assurer une 'synthèse ultime' des thèmes, évitant toute redondance thématique ou textuelle, en transformant les passages répétés en 'fables ou allégories concises' ?
+    *   Comment garantir que chaque révélation est un 'outil' et chaque chapitre un 'pas vers la maîtrise' pour l'Architecte Conscient (le lecteur) ?
+    *   Comment maintenir un ton 'initiatique et symbolique' tout en évitant les 'hallucinations' et en garantissant l'originalité ?
+
+Ces questions serviront de boussole pour naviguer dans la réécriture, garantissant que chaque mot, chaque phrase, chaque scène contribue à l'objectif d'une V3 magistrale et vertigineuse.
+
+
+
+
+

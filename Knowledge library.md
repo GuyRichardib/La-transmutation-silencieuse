@@ -115,11 +115,4 @@ Cette bibliothèque sert de référence rapide pour toute personne qui entre dan
 - Adopter un ton de maître patient, ancrer chaque concept dans des exemples quotidiens, rendre la transformation actionable.
 - Maintenir un style « interdit mais accessible » en ré-contextualisant les connaissances afin d'éviter la répétition.
 
-## 10. Syntonie Médicis — Fusion de l'Architecte et du Poète
-
-- **Boussole I·T·A·E** : chaque merge doit nourrir au moins deux vecteurs — Intention, Tension, Attention, Extension — consignés dans la PR.
-- **Rythme respiratoire** : alterner naturellement phases d'écriture libre et sessions de structuration afin de garder le texte vivant sans perdre l'alignement.
-- **Vigilance sur les motifs** : limiter le nombre de symboles actifs en notant simplement leur occurrence dans le journal de sprint afin d'éviter la saturation.
-- **Principe Médicis** : provoquer régulièrement des croisements disciplinaires (chapitres 3, 9, 15, 22) et documenter leur apport vibratoire dans les PR.
-
 > *« Que chaque mot soit une graine, que chaque silence soit une prière. »*
