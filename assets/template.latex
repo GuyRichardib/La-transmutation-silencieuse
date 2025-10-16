@@ -16,6 +16,9 @@ $if(linestretch)$
 $endif$
 
 \usepackage{fancyhdr}
+$if(subtitle)$
+\usepackage{titling}
+$endif$
 \pagestyle{fancy}
 \fancyhf{}
 $if(header-left)$
@@ -40,6 +43,21 @@ $endif$
   \fancyfoot[C]{$footer-right$}
   $endif$
 }
+
+$if(title)$
+\title{$title$}
+$endif$
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+$if(date)$
+\date{$date$}
+$else$
+\date{}
+$endif$
 
 \begin{document}
 

@@ -34,17 +34,7 @@ jobs:
             fonts-ebgaramond \
             poppler-utils
 
-          # 2. Mettre à jour la base de données de TeX Live (correction de l'erreur lmodern.sty)
-          echo "Updating TeX Live file database..."
-          sudo texhash
-
-          # 3. Installer manuellement la police EB Garamond (correction de l'erreur font not found)
-          echo "Installing EB Garamond font..."
-          sudo mkdir -p /usr/local/share/fonts/truetype/ebgaramond
-          sudo wget https://raw.githubusercontent.com/google/fonts/main/ofl/ebgaramond/static/EBGaramond-Regular.ttf -O /usr/local/share/fonts/truetype/ebgaramond/EBGaramond-Regular.ttf
-
-          # 4. Mettre à jour le cache des polices du système pour que XeLaTeX la trouve
-          echo "Updating system font cache..."
+          # Mettre à jour le cache des polices du système pour que XeLaTeX la trouve
           sudo fc-cache -f -v
 
       - name: Sanity check font is installed
