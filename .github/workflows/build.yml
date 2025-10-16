@@ -42,7 +42,7 @@ jobs:
           # 3. Installer manuellement la police EB Garamond (correction de l'erreur font not found)
           echo "Installing EB Garamond font..."
           sudo mkdir -p /usr/local/share/fonts/truetype/ebgaramond
-          sudo wget https://github.com/google/fonts/raw/main/ofl/ebgaramond/EBGaramond-Regular.ttf -O /usr/local/share/fonts/truetype/ebgaramond/EBGaramond-Regular.ttf
+          sudo wget https://raw.githubusercontent.com/google/fonts/main/ofl/ebgaramond/static/EBGaramond-Regular.ttf -O /usr/local/share/fonts/truetype/ebgaramond/EBGaramond-Regular.ttf
 
           # 4. Mettre à jour le cache des polices du système pour que XeLaTeX la trouve
           echo "Updating system font cache..."
