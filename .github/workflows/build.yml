@@ -30,6 +30,8 @@ jobs:
             latexmk
           kpsewhich lmodern.sty && echo "OK: $(kpsewhich lmodern.sty)" || (echo "ERROR: lmodern.sty not found" && exit 1)
           which xelatex && xelatex --version
+      - name: Install EB Garamond font
+        run: sudo tlmgr install ebgaramond
       - name: Count words
         run: python3 scripts/wordcount.py
       - name: Build EPUB/PDF/DOCX
