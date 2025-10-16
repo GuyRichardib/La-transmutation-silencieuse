@@ -1,0 +1,22 @@
+# Configuration Syntonie Médicis — point de départ
+intent: "À compléter depuis intent-template.md"
+targets:
+  total_words: 80000
+  chapters: 27
+  act_split: [0.25, 0.5, 0.25]
+syntony:
+  chaos_thermostat_K: 0.5
+  motif_budget: 7
+  medici_nodes: [3, 9, 15, 22]
+quality_gates:
+  semci_threshold: 80
+  voice_drift_max: 0.15
+cadence:
+  poet_days: [Mon, Tue, Thu]
+  engineer_days: [Wed, Fri]
+rituals:
+  tags_required: [desire, fear, cost]
+  freeze_tags:
+    act1: v1.0
+    act2: v2.0
+    act3: v3.0
