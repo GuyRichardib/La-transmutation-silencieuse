@@ -23,17 +23,16 @@ jobs:
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Install TeX Live packages and custom fonts
+      - name: Install TeX Live + EB Garamond (robuste)
         run: |
-          # 1. Installer les paquets TeX Live de base (votre code original)
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            fonts-lmodern \
-            texlive-latex-recommended \
+            texlive-xetex \
             texlive-latex-extra \
             texlive-fonts-recommended \
-            latexmk \
-            texlive-xetex
+            texlive-fonts-extra \
+            fonts-ebgaramond \
+            poppler-utils
 
           # 2. Mettre à jour la base de données de TeX Live (correction de l'erreur lmodern.sty)
           echo "Updating TeX Live file database..."
@@ -48,14 +47,25 @@ jobs:
           echo "Updating system font cache..."
           sudo fc-cache -f -v
 
+      - name: Sanity check font is installed
+        run: fc-list | grep -i "eb garamond" || (echo "Police EB Garamond non trouvée" && exit 1)
+
       - name: Count words
         run: python3 scripts/wordcount.py
 
-      - name: Build EPUB/PDF/DOCX
-        run: bash scripts/build.sh
+      - name: Build all formats
+        run: |
+          chmod +x scripts/build.sh
+          ./scripts/build.sh
+
+      - name: Verify PDF page size (6x9 in = 432x648 pts)
+        run: |
+          echo "Vérification des dimensions du PDF..."
+          pdfinfo dist/book.pdf | grep "Page size"
+          pdfinfo dist/book.pdf | grep "Page size: *432 x 648" || (echo "ERREUR: Le PDF n'est pas au format 6x9 KDP." && exit 1)
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: book-build
-          path: dist/*
+          name: book-artifacts
+          path: dist/
