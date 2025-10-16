@@ -40,7 +40,7 @@ Créer `journal_sprints.md` pour archiver ces revues.
   - Prévoir pages liminaires : faux-titre, titre, copyright, dédicace, table des matières.
 - **E-book (.epub)**
   - Nettoyer le Markdown puis convertir via `pandoc` en conservant les titres hiérarchiques.
-  - Générer une table des matières cliquable et styliser les sections « PROTOCOLE DU MIROIR » avec une classe CSS dédiée.
+  - Générer une table des matières cliquable et styliser les sections « PROTOCOLE DU MIROIR » avec une classe CSS dédiée (`styles/epub.css`).
 
 ## 4. Création de la Couverture
 - **Brief artistique**
@@ -55,6 +55,11 @@ Créer `journal_sprints.md` pour archiver ces revues.
 - Contrôler les exports via Kindle Previewer et l'outil de prévisualisation KDP.
 - Vérifier la conformité PDF (fonds perdus de 0,125" et marges de 0,25").
 - Préparer un kit média minimal : résumé, biographie, visuels.
+
+## 6. Automatisation et CI
+- `scripts/wordcount.py` sert de garde-fou quotidien : exécuter `make count` pour mesurer la progression.
+- `scripts/build.sh` et le workflow GitHub Actions `build.yml` assurent la compilation EPUB/PDF/DOCX à chaque push.
+- Conservez les assets et recherches dans les dossiers dédiés pour faciliter la compilation (`--resource-path`).
 
 ---
 _Que chaque sprint soit un polissage du Miroir, que chaque page s'accorde à la note silencieuse._
