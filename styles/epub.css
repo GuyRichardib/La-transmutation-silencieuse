@@ -1,0 +1,17 @@
+body {
+  font-family: "Garamond", serif;
+  line-height: 1.5;
+  margin: 0 1em;
+}
+
+h1, h2, h3 {
+  text-align: center;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.protocol-mirror {
+  text-align: center;
+  font-style: italic;
+  margin: 3em 0;
+}
