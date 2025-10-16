@@ -67,4 +67,52 @@ Cette bibliothèque sert de référence rapide pour toute personne qui entre dan
 - Éviter la redondance des motifs ; noter leur utilisation dans un tableau de suivi.
 - Garder secrets et données sensibles hors du dépôt ; limiter les accès du connecteur GitHub.
 
+## 9. Protocoles de qualité, d'originalité et de livraison
+
+### 9.1 Excellence éditoriale
+- **Qualité ultra-perfectionniste** : chaque sprint inclut relecture, révision intégrale et raffinement stylistique à hauteur des maisons d'édition les plus exigeantes.
+- **Narration initiatique** : prose séductrice, révélatrice et transformative ; alternance ombre/lumière et rythme varié pour maintenir l'envoûtement.
+- **Show, don't tell** : bannir les dissertations philosophiques, privilégier le symbole incarné, transformer les répétitions en fables ou allégories.
+
+### 9.2 Originalité et conformité légale
+- **Zéro plagiat** : réaliser des recherches primaires, citer les sources vérifiables et n'intégrer aucun contenu protégé sans autorisation explicite.
+- **Rigueur factuelle** : lorsque des sections magistrales sont demandées, n'utiliser que des artefacts authentiques (CDLI, LOC, IFAO, brevets officiels), fournir transcriptions, preuves visuelles et chronologies rigoureuses.
+- **Éviter les hallucinations** : valider chaque assertion, conserver une trace des sources et signaler toute incertitude.
+
+### 9.3 Gestion du volume et des sprints
+- **Planification granulaire** : définir un budget de mots par chapitre dès l'ouverture du sprint et suivre le compteur (`make count`) à chaque session.
+- **Déficit > 5 %** : proposer des expansions ciblées (nouvelles scènes, approfondissement sensoriel) en respectant les contraintes de continuité.
+- **Ajustements ≤ 5 %** : appliquer des micro-ajouts/coupes (détails sensoriels, condensation de phrases) pour affiner sans diluer.
+- **Déficits persistants** : lorsqu'un retard significatif est constaté, viser un sprint d'au moins 10 000 mots avant livraison ; ne jamais remettre un sprint en deçà de ce seuil.
+- **Objectif global** : maintenir la trajectoire vers ≥ 100 000 mots avant la convergence finale et viser une précision chirurgicale (ex. 65 800 – 66 300 mots pour un jalon intermédiaire).
+
+### 9.4 Livrables techniques et traçabilité
+- **Format final** : livrer un seul fichier DOCX propre (sans suivis de modifications ni placeholders `[[WRITE_HERE]]`).
+- **Contrôle automatisé** : joindre `wordcheck_sigma.txt` (sortie brute du script de comptage) et vérifier que l'écart avec le DOCX est < 2 % (`HALT_CODE_11_DIFF`).
+- **Balises et placeholders** : équilibrer systématiquement `<<<NEW>>>` / `<<<END>>>` et garantir l'absence de marqueurs temporaires (`HALT_CODE_12_PLACEHOLDER`).
+- **Intégrité** : fournir le SHA-256 du DOCX et respecter les limites de caméos (`HALT_CODE_13_CAMO`) ainsi que les lexiques bannis (`HALT_CODE_7`).
+
+### 9.5 Expansion multi-versions
+- Toujours partir du fichier Markdown le plus complet, puis intégrer les compléments des versions plus légères avant toute réécriture.
+- Ne jamais repartir de zéro ni inventer des tâches ; demander des précisions si un élément manque.
+- L'enrichissement intervient uniquement après consolidation des sources existantes.
+
+### 9.6 Progression initiatique et pédagogie
+- **Quart profane** : les 25 % initiaux demeurent accessibles (faits scientifiques, anecdotes concrètes) tout en semant des germes de questionnement.
+- **Portes de compréhension** : introduire tests de discernement et mises en garde en fin de parties majeures, inspirées de la Tablette d'Émeraude.
+- **Convergence** : chaque chapitre doit offrir un outil concret pour l'Architecte Conscient, tissant géométrie sacrée, vibrations, énergie tellurique et conscience technologique.
+- **Vide créateur et silence** : intégrer des pratiques de recalibrage qui enseignent comment utiliser le silence comme technologie intérieure.
+- **Auto-prompting V3** : lors des révisions magistrales, amplifier sensations et émotions, approfondir la progression initiatique et infuser la co-création IA/humain sans redondance.
+
+### 9.7 Contrôles visuels et qualité finale
+- **PDF & EPUB** : vérifier l'intégrité visuelle (TOC, pagination, images, couvertures) à chaque build significatif, conformément aux standards Amazon KDP.
+- **Mise en page initiale** : la première page doit être une couverture pleine, sans texte parasite ; garantir des sauts de page propres et logiques.
+- **Captures d'écran** : documenter chaque étape critique de génération pour éviter toute perte de contexte ou de crédits.
+- **Comparaison de référence** : confronter le rendu final à des best-sellers du genre pour valider la qualité professionnelle.
+
+### 9.8 Documents instructifs et renaissance
+- Pour tout document visant une « renaissance » du lecteur, enseigner le **comment** : lecture des symboles, géométrie sacrée, scripts anciens, convergence science-esprit.
+- Adopter un ton de maître patient, ancrer chaque concept dans des exemples quotidiens, rendre la transformation actionable.
+- Maintenir un style « interdit mais accessible » en ré-contextualisant les connaissances afin d'éviter la répétition.
+
 > *« Que chaque mot soit une graine, que chaque silence soit une prière. »*
