@@ -31,7 +31,5 @@ Les chapitres sont stockés dans `book/manuscript/` et peuvent être édités in
 
 ## Ressources supplémentaires
 - `Knowledge library.md` synthétise les principes alchimiques, les personnages et le mode opératoire technico-créatif.
-- `book/outline-27chap.md` fournit le squelette narratif en 27 chapitres avec les triptyques désir/peur/transformation à suivre.
 - `next_steps.md` décrit les sprints d'écriture restants et les revues alchimiques.
-- Le dossier `governance/` rassemble les gabarits de syntonie (intent, ledger de continuité, journal d'énergie, configuration YAML) à dupliquer pour chaque sprint.
 - Les dossiers `research/` et `assets/` sont prêts à accueillir les matériaux de référence et visuels.
