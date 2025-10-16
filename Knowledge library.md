@@ -43,7 +43,7 @@ Cette bibliothèque sert de référence rapide pour toute personne qui entre dan
   - `wordcount.py` — calcule le volume par fichier, signale le déficit par rapport aux 80k mots.
   - `build.sh` — génère EPUB, PDF et DOCX dans `dist/` en s'appuyant sur Pandoc.
 - `styles/` : feuille CSS pour l'e-book, métadonnées EPUB.
-- `.github/workflows/build.yml` : pipeline CI qui installe Python, Pandoc et les paquets TeX Live nécessaires (`texlive-latex-base`, `texlive-latex-recommended`, `texlive-fonts-recommended`, `texlive-xetex`) avant de lancer la compilation et d'uploader les artefacts.
+- `.github/workflows/build.yml` : pipeline CI qui installe Python, Pandoc et TeX Live avant de lancer la compilation et d'uploader les artefacts.
 - `next_steps.md` : feuille de route des sprints et directives de publication KDP.
 
 ## 6. Boucle de collaboration ChatGPT + Codex
@@ -114,13 +114,5 @@ Cette bibliothèque sert de référence rapide pour toute personne qui entre dan
 - Pour tout document visant une « renaissance » du lecteur, enseigner le **comment** : lecture des symboles, géométrie sacrée, scripts anciens, convergence science-esprit.
 - Adopter un ton de maître patient, ancrer chaque concept dans des exemples quotidiens, rendre la transformation actionable.
 - Maintenir un style « interdit mais accessible » en ré-contextualisant les connaissances afin d'éviter la répétition.
-
-## 10. Syntonie Médicis — Fusion de l'Architecte et du Poète
-
-- **Boussole I·T·A·E** : chaque merge doit nourrir au moins deux vecteurs — Intention, Tension, Attention, Extension — consignés dans la PR.
-- **Rythme respiratoire** : alterner naturellement phases d'écriture libre et sessions de structuration afin de garder le texte vivant sans perdre l'alignement.
-- **Vigilance sur les motifs** : limiter le nombre de symboles actifs en notant simplement leur occurrence dans le journal de sprint afin d'éviter la saturation.
-- **Principe Médicis** : provoquer régulièrement des croisements disciplinaires (chapitres 3, 9, 15, 22) et documenter leur apport vibratoire dans les PR.
-- **Trousse de gouvernance** : dupliquez les gabarits contenus dans `governance/` avant chaque sprint — `intent-template.md` pour formuler le vœu souverain, `continuity-ledger.md` pour tracer personnages/motifs, `energy-journal.md` pour corréler énergie et qualité, `syntony-config.yaml` pour consigner les réglages du thermostat.
 
 > *« Que chaque mot soit une graine, que chaque silence soit une prière. »*
