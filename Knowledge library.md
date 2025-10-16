@@ -118,10 +118,8 @@ Cette bibliothèque sert de référence rapide pour toute personne qui entre dan
 ## 10. Syntonie Médicis — Fusion de l'Architecte et du Poète
 
 - **Boussole I·T·A·E** : chaque merge doit nourrir au moins deux vecteurs — Intention, Tension, Attention, Extension — consignés dans la PR.
-- **Protocole Syntonie‑12** : suivre les douze rituels détaillés dans `protocols/syntonie-medici.md` (SID, ledger de continuité, budget de motifs, balises D·F·C, alternance Poète/Ingénieur, nœuds Médicis, pré-mortem, SemCI, télémétrie d'énergie, gel par acte, boucle lecteur, rituel d'accord).
-- **Thermostat du chaos** : maintenir \(K\) dans la zone 0,35–0,65 pour rester au bord du chaos créatif ; déclencher les contre-mesures prévues lorsque le ratio dérive.
-- **Métriques de vérité** : surveiller FD, CL, MRR et VD pour garantir que l'ouvrage reste vivant sans perdre la cohérence.
-- **Kit opérationnel** : utiliser `templates/intent-template.md`, `templates/syntonie-config.yaml`, `scripts/syntony_guard.py`, `continuity.md` et `logs/energie.csv` pour instrumenter la syntonie.
-- **Principe Médicis** : programmer quatre nœuds interdisciplinaires (chapitres 3, 9, 15, 22) et documenter leur apport vibratoire dans les PR.
+- **Rythme respiratoire** : alterner naturellement phases d'écriture libre et sessions de structuration afin de garder le texte vivant sans perdre l'alignement.
+- **Vigilance sur les motifs** : limiter le nombre de symboles actifs en notant simplement leur occurrence dans le journal de sprint afin d'éviter la saturation.
+- **Principe Médicis** : provoquer régulièrement des croisements disciplinaires (chapitres 3, 9, 15, 22) et documenter leur apport vibratoire dans les PR.
 
 > *« Que chaque mot soit une graine, que chaque silence soit une prière. »*

@@ -20,7 +20,6 @@ Les chapitres sont stockés dans `book/manuscript/` et peuvent être édités in
 ## Commandes utiles
 - `make count` — affiche le nombre de mots par fichier et le total.
 - `make build` — génère EPUB, PDF et DOCX dans `dist/` (requiert Pandoc et une distribution LaTeX complète pour le PDF).
-- `python3 scripts/syntony_guard.py` — vérifie les balises désir/peur/coût et le budget de motifs.
 
 ## Flux de travail recommandé
 1. Créez une branche par chapitre ou sprint (`feature/ch08-draft`).
@@ -32,8 +31,6 @@ Les chapitres sont stockés dans `book/manuscript/` et peuvent être édités in
 
 ## Ressources supplémentaires
 - `Knowledge library.md` synthétise les principes alchimiques, les personnages et le mode opératoire technico-créatif.
-- `protocols/syntonie-medici.md` formalise la fusion Architecte/Poète et les douze rituels de syntonie.
-- `templates/intent-template.md` et `templates/syntonie-config.yaml` servent de point de départ pour configurer l'intention et le thermostat du chaos.
 - `book/outline-27chap.md` fournit le squelette narratif en 27 chapitres avec les triptyques désir/peur/transformation à suivre.
 - `next_steps.md` décrit les sprints d'écriture restants et les revues alchimiques.
 - Les dossiers `research/` et `assets/` sont prêts à accueillir les matériaux de référence et visuels.

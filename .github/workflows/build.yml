@@ -28,8 +28,6 @@ jobs:
             texlive-fonts-recommended
       - name: Count words
         run: python3 scripts/wordcount.py
-      - name: Check Syntonie Médicis
-        run: python3 scripts/syntony_guard.py
       - name: Build EPUB/PDF/DOCX
         run: bash scripts/build.sh
       - name: Upload artifacts
