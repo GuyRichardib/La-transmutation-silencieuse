@@ -30,6 +30,16 @@ jobs:
             latexmk
           kpsewhich lmodern.sty && echo "OK: $(kpsewhich lmodern.sty)" || (echo "ERROR: lmodern.sty not found" && exit 1)
           which xelatex && xelatex --version
+      - name: Install EB Garamond font (portable via CTAN)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip fontconfig
+          mkdir -p ~/.local/share/fonts
+          curl -L -o /tmp/ebgaramond.zip https://mirrors.ctan.org/fonts/ebgaramond.zip
+          unzip -o /tmp/ebgaramond.zip -d /tmp/ebgaramond
+          find /tmp/ebgaramond -type f \( -iname '*.otf' -o -iname '*.ttf' \) -exec cp -v {} ~/.local/share/fonts/ \;
+          fc-cache -f -v
+          fc-list | grep -i "eb garamond" || true
       - name: Count words
         run: python3 scripts/wordcount.py
       - name: Build EPUB/PDF/DOCX
