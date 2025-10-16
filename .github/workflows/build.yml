@@ -19,16 +19,17 @@ jobs:
           python-version: '3.x'
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
-      - name: Install TeX Live packages
+      - name: Install TeX Live packages and verify lmodern
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            fonts-lmodern \
+          sudo apt-get install -y \
+            texlive-xetex \
             texlive-latex-recommended \
-            texlive-latex-extra \
             texlive-fonts-recommended \
-            latexmk \
-            texlive-xetex
+            fonts-lmodern \
+            latexmk
+          kpsewhich lmodern.sty && echo "OK: $(kpsewhich lmodern.sty)" || (echo "ERROR: lmodern.sty not found" && exit 1)
+          which xelatex && xelatex --version
       - name: Count words
         run: python3 scripts/wordcount.py
       - name: Build EPUB/PDF/DOCX
