@@ -22,20 +22,13 @@ jobs:
       - name: Install TeX Live packages
         run: |
           sudo apt-get update
-          # Install packages providing lmodern.sty and core LaTeX tooling.
-          sudo apt-get install -y \
+          sudo apt-get install -y --no-install-recommends \
+            fonts-lmodern \
             texlive-latex-recommended \
             texlive-latex-extra \
             texlive-fonts-recommended \
             latexmk \
-            fonts-lmodern
-          # Verify that lmodern.sty is available after install.
-          if ! kpsewhich lmodern.sty >/dev/null; then
-            echo "ERROR: lmodern.sty not found after install"
-            ls -l /usr/share/texmf* || true
-            kpsewhich -var-value=TEXMFHOME || true
-            exit 1
-          fi
+            texlive-xetex
       - name: Count words
         run: python3 scripts/wordcount.py
       - name: Build EPUB/PDF/DOCX
