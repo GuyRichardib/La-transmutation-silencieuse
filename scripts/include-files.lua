@@ -2,8 +2,6 @@
 local utils = require 'pandoc.utils'
 local path  = require 'pandoc.path'
 
-local include_pat = '^%s*@include%((.-)%)%s*$'
-
 -- BASE_DIR déterminé de façon sûre et traçable
 local function detect_base_dir()
   local base = '.'
@@ -75,18 +73,36 @@ local function read_blocks_from_file(include_path)
   return parsed.blocks
 end
 
+local function expand_includes_in_text(txt)
+  local out = pandoc.List:new()
+  local any = false
+  local reader_opts = (PANDOC_STATE and PANDOC_STATE.reader_options) or nil
+
+  local i = 1
+  for s, target, e in txt:gmatch('()@include%((.-)%)()') do
+    local before = txt:sub(i, s - 1)
+    if before and before:match('%S') then
+      out:extend(pandoc.read(before, 'markdown', reader_opts).blocks)
+    end
+    out:extend(read_blocks_from_file(target))
+    any = true
+    i = e
+  end
+
+  local tail = txt:sub(i)
+  if tail and tail:match('%S') then
+    out:extend(pandoc.read(tail, 'markdown', reader_opts).blocks)
+  end
+
+  if any then return out else return nil end
+end
+
 local function maybe_include_from_block(blk)
   if blk.t == 'RawBlock' and blk.format == 'markdown' then
-    local inc = blk.text and blk.text:match(include_pat)
-    if inc then return read_blocks_from_file(inc) end
-    return nil
+    return expand_includes_in_text(blk.text or '')
   end
   if blk.t == 'Para' or blk.t == 'Plain' then
-    local raw = utils.stringify(blk)
-    if raw then
-      local inc = raw:match(include_pat)
-      if inc then return read_blocks_from_file(inc) end
-    end
+    return expand_includes_in_text(utils.stringify(blk) or '')
   end
   return nil
 end
