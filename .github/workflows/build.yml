@@ -19,13 +19,16 @@ jobs:
           python-version: '3.x'
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
-      - name: Install TeX Live
+      - name: Install TeX Live packages
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            texlive \
+            fonts-lmodern \
+            texlive-latex-recommended \
             texlive-latex-extra \
-            texlive-fonts-recommended
+            texlive-fonts-recommended \
+            latexmk \
+            texlive-xetex
       - name: Count words
         run: python3 scripts/wordcount.py
       - name: Build EPUB/PDF/DOCX
