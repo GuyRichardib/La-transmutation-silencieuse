@@ -1,3 +1,4 @@
+local List = require 'pandoc.List'
 local utils = require 'pandoc.utils'
 local path = require 'pandoc.path'
 
@@ -49,7 +50,7 @@ local function extract_include(blk)
 end
 
 function Pandoc(doc)
-  local out = pandoc.List()
+  local out = List.new()
   for _, blk in ipairs(doc.blocks) do
     local include_path = extract_include(blk)
     if include_path then
