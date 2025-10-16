@@ -19,17 +19,27 @@ jobs:
           python-version: '3.x'
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
-      - name: Install TeX Live packages and verify lmodern
+      - name: Install TeX Live & EB Garamond Font
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
+          sudo apt-get install -y --no-install-recommends \
             texlive-xetex \
             texlive-latex-recommended \
             texlive-fonts-recommended \
             fonts-lmodern \
-            latexmk
+            latexmk \
+            wget \
+            fontconfig
           kpsewhich lmodern.sty && echo "OK: $(kpsewhich lmodern.sty)" || (echo "ERROR: lmodern.sty not found" && exit 1)
           which xelatex && xelatex --version
+
+          echo "Installing EB Garamond font..."
+          sudo mkdir -p /usr/local/share/fonts/truetype/ebgaramond
+          sudo wget https://github.com/google/fonts/raw/main/ofl/ebgaramond/EBGaramond-Regular.ttf \
+            -O /usr/local/share/fonts/truetype/ebgaramond/EBGaramond-Regular.ttf
+
+          echo "Updating font cache..."
+          sudo fc-cache -f -v
       - name: Count words
         run: python3 scripts/wordcount.py
       - name: Build EPUB/PDF/DOCX
