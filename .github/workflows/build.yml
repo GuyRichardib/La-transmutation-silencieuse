@@ -43,6 +43,19 @@ jobs:
       - name: Count words
         run: python3 scripts/wordcount.py
 
+      - name: Sanity – show include filter
+        run: |
+          echo "===== scripts/include-files.lua (HEAD) ====="
+          nl -ba scripts/include-files.lua | sed -n '1,200p'
+          echo "Git SHA: $(git rev-parse HEAD)"
+          ls -la book book/manuscript || true
+
+      - name: Preflight – verify @include targets exist
+        run: |
+          set -euo pipefail
+          echo "Scanning @include(...) targets..."
+          python3 scripts/check_includes.py
+
       - name: Build all formats
         run: |
           chmod +x scripts/build.sh
