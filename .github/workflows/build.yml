@@ -43,18 +43,58 @@ jobs:
       - name: Count words
         run: python3 scripts/wordcount.py
 
-      - name: Sanity - show include filter
+      - name: Sanity – show include filter
         run: |
           echo "===== scripts/include-files.lua (HEAD) ====="
           nl -ba scripts/include-files.lua | sed -n '1,200p'
           echo "Git SHA: $(git rev-parse HEAD)"
           ls -la book book/manuscript || true
 
-      - name: Preflight - verify @include targets exist
+      - name: Preflight – verify @include targets exist
         run: |
           set -euo pipefail
           echo "Scanning @include(...) targets..."
-          python3 scripts/verify_includes.py
+          python3 - <<'PY'
+import pathlib
+import re
+import sys
+
+root = pathlib.Path('.').resolve()
+files = [root / 'book' / 'book.md']
+manuscript_dir = root / 'book' / 'manuscript'
+if manuscript_dir.is_dir():
+    files.extend(sorted(manuscript_dir.glob('*.md')))
+
+pattern = re.compile(r'@include\(([^)]+)\)')
+missing = []
+
+def candidates(target: str):
+    target = target.strip().strip("'\"")
+    return [
+        root / target,
+        root / 'book' / target,
+        root / 'book' / 'manuscript' / target,
+    ], target
+
+for path in files:
+    if not path.exists():
+        continue
+    for lineno, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
+        for match in pattern.finditer(line):
+            cand, cleaned = candidates(match.group(1))
+            if any(c.exists() for c in cand):
+                print(f"OK   {path.relative_to(root)}:{lineno} -> {cleaned}")
+            else:
+                print(f"MISS {path.relative_to(root)}:{lineno} -> {cleaned}")
+                missing.append((path, lineno, cleaned, cand))
+
+if missing:
+    for _, _, cleaned, cand in missing:
+        tried = '\n  - '.join(str(c.relative_to(root)) for c in cand)
+        print(f"Candidates tried for {cleaned}:\n  - {tried}")
+    print(f"Missing {len(missing)} include target(s).", file=sys.stderr)
+    sys.exit(1)
+PY
 
       - name: Build all formats
         run: |
