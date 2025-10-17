@@ -111,6 +111,30 @@ local function expand_includes_in_text(txt)
   if any then return out else return nil end
 end
 
+local function expand_includes_in_text(txt)
+  local out = pandoc.List:new()
+  local any = false
+  local reader_opts = (PANDOC_STATE and PANDOC_STATE.reader_options) or nil
+
+  local i = 1
+  for s, target, e in txt:gmatch('()@include%((.-)%)()') do
+    local before = txt:sub(i, s - 1)
+    if before and before:match('%S') then
+      out:extend(pandoc.read(before, 'markdown', reader_opts).blocks)
+    end
+    out:extend(read_blocks_from_file(target))
+    any = true
+    i = e
+  end
+
+  local tail = txt:sub(i)
+  if tail and tail:match('%S') then
+    out:extend(pandoc.read(tail, 'markdown', reader_opts).blocks)
+  end
+
+  if any then return out else return nil end
+end
+
 local function maybe_include_from_block(blk)
   if blk.t == 'RawBlock' and blk.format == 'markdown' then
     return expand_includes_in_text(blk.text or '')

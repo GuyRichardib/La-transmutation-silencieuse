@@ -17,27 +17,8 @@
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
-% --- Microtypographie et hyphénation ---
-\usepackage[protrusion=true,expansion=false]{microtype}
-\microtypesetup{protrusion=true}
-\setlength\emergencystretch{2em}
-\tolerance=2000
-\hyphenpenalty=200
-\exhyphenpenalty=50
-\lefthyphenmin=2
-\righthyphenmin=2
-
-% --- Espacement des paragraphes ---
-$if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
-$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25em}$endif$
-
 \usepackage{setspace}
 $if(linestretch)$\setstretch{$linestretch$}$endif$
-
-\clubpenalty=10000
-\widowpenalty=10000
-\displaywidowpenalty=10000
-\raggedbottom
 
 \usepackage[unicode]{hyperref}
 \usepackage{bookmark}
@@ -59,19 +40,8 @@ $if(footer-right)$\fancyfoot[RO]{$footer-right$}$endif$
 }
 
 \usepackage{etoolbox}
-\makeatletter
-\newcommand{\ChapterBreak}{%
-  \if@twoside\cleardoublepage\else\clearpage\fi
-}
-\makeatother
-\preto{\section}{\ChapterBreak}
-\preto{\subsection}{\ChapterBreak}
-
-$if(number-sections)$
-% Numérotation maintenue
-$else$
-\setcounter{secnumdepth}{0}
-$endif$
+\preto{\section}{\clearpage}
+\preto{\subsection}{\clearpage}
 
 \begin{document}
 
