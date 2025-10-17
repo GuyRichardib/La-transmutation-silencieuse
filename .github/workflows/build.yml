@@ -26,6 +26,7 @@ jobs:
 
       - name: Install TeX Live + EB Garamond (robuste)
         run: |
+          set -euxo pipefail
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             texlive-xetex \
@@ -33,11 +34,15 @@ jobs:
             texlive-pictures \
             texlive-graphics \
             texlive-latex-extra \
+            texlive-pictures \
             texlive-fonts-recommended \
             texlive-fonts-extra \
             fonts-ebgaramond \
             poppler-utils
           sudo fc-cache -f -v
+          kpsewhich microtype.sty
+          kpsewhich newunicodechar.sty
+          kpsewhich pgfbase.sty
 
       - name: Preflight - verify @include targets
         run: python3 scripts/verify_includes.py .
