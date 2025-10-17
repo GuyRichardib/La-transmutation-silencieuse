@@ -9,16 +9,37 @@
   \usepackage{polyglossia}
   \setmainlanguage{french}
   \XeTeXgenerateactualtext=1
+  \usepackage{sectsty}
+  $if(headingfont)$\newfontfamily\HeadingFont{$headingfont$}[Renderer=Harfbuzz]$else$\newfontfamily\HeadingFont{EB Garamond}[Renderer=Harfbuzz]$endif$
+  \allsectionsfont{\HeadingFont\bfseries}
 \else
   \usepackage[utf8]{inputenc}
   \usepackage[T1]{fontenc}
+  \usepackage{sectsty}
+  \allsectionsfont{\bfseries}
 \fi
 
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
-\usepackage{setspace}
-$if(linestretch)$\setstretch{$linestretch$}$endif$
+% --- Espacement paragraphes ---
+$if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
+$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25em}$endif$
+$if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
+
+% --- Microtypographie & justification ---
+\usepackage[protrusion=true,expansion=false]{microtype}
+\microtypesetup{protrusion=true}
+\setlength\emergencystretch{2em}
+\tolerance=2000
+\hyphenpenalty=200
+\exhyphenpenalty=50
+\lefthyphenmin=2
+\righthyphenmin=2
+\raggedbottom
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
 
 \usepackage[unicode]{hyperref}
 \usepackage{bookmark}
@@ -39,9 +60,19 @@ $if(footer-right)$\fancyfoot[RO]{$footer-right$}$endif$
   $if(footer-right)$\fancyfoot[C]{$footer-right$}$endif$
 }
 
+% --- Numérotation des sections ---
+$if(number-sections)$
+  % Section numbering handled by Pandoc
+$else$
+  \setcounter{secnumdepth}{0}
+$endif$
+
 \usepackage{etoolbox}
-\preto{\section}{\clearpage}
-\preto{\subsection}{\clearpage}
+\makeatletter
+\newcommand{\ChapterBreak}{\if@twoside\cleardoublepage\else\clearpage\fi}
+\makeatother
+\preto{\section}{\ChapterBreak}
+\preto{\subsection}{\ChapterBreak}
 
 \begin{document}
 
