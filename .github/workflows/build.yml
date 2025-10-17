@@ -42,6 +42,9 @@ jobs:
       - name: Count words
         run: python3 scripts/wordcount.py
 
+      - name: Normalize Unicode (NFC)
+        run: python3 scripts/normalize_unicode.py
+
       - name: Build all formats
         run: |
           chmod +x scripts/build.sh

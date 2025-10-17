@@ -13,6 +13,24 @@
   $if(mainfont)$\setmainfont{$mainfont$}$endif$
   \usepackage{polyglossia}
   \setmainlanguage{french}
+  \usepackage{microtype}
+  \microtypesetup{protrusion=true, expansion=true}
+  \setlength\emergencystretch{2em}
+  \pretolerance=100
+  \tolerance=2000
+  \hfuzz=0.3pt
+  % Normalize problematic Unicode glyphs for XeTeX headings
+  \usepackage{newunicodechar}
+  \newunicodechar{ }{\nobreak\thinspace}% U+202F fine no-break space
+  \newunicodechar{ }{~}% U+00A0 no-break space
+  \newunicodechar{’}{\textquoteright}% U+2019 right single quotation mark
+  \newunicodechar{‘}{\textquoteleft}% U+2018 left single quotation mark
+  \newunicodechar{“}{\textquotedblleft}% U+201C left double quotation mark
+  \newunicodechar{”}{\textquotedblright}% U+201D right double quotation mark
+  \newunicodechar{–}{\textendash}% U+2013 en dash
+  \newunicodechar{—}{\textemdash}% U+2014 em dash
+  \newunicodechar{…}{\ldots}% U+2026 ellipsis
+  \newunicodechar{́}{\'{}}% U+0301 combining acute accent
   \XeTeXgenerateactualtext=1
   \usepackage{sectsty}
   $if(headingfont)$\newfontfamily\HeadingFont{$headingfont$}[Renderer=Harfbuzz]$else$\newfontfamily\HeadingFont{EB Garamond}[Renderer=Harfbuzz]$endif$
