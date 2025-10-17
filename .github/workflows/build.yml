@@ -32,6 +32,7 @@ jobs:
             texlive-latex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
+            texlive-lang-european \
             fonts-ebgaramond \
             poppler-utils
           sudo fc-cache -f -v

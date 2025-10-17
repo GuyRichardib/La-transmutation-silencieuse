@@ -19,25 +19,32 @@
   \allsectionsfont{\bfseries}
 \fi
 
-% --- Charger microtype uniquement si nécessaire ---
-\makeatletter
-\@ifpackageloaded{microtype}{}{%
-  \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
-}
-\makeatother
-\providecommand{\microtypesetup}[1]{}
+% --- Microtype : passer les options AVANT de charger, et ne le charger qu'une fois.
+\PassOptionsToPackage{final,protrusion=true,expansion=true,tracking=true}{microtype}
+\IfFileExists{microtype.sty}{%
+  \usepackage{microtype}%
+  \UseMicrotypeSet[protrusion]{basicmath}%
+}{}
 
-% --- Normaliser les espaces Unicode courants ---
-\IfFileExists{newunicodechar.sty}{\usepackage{newunicodechar}}{}
-\DeclareUnicodeCharacter{202F}{\,}
-\DeclareUnicodeCharacter{00A0}{~}
+% --- Normaliser les espaces Unicode courants (UTF-8, XeLaTeX).
+% U+00A0 NO-BREAK SPACE  → espace insécable "normale"
+% U+202F NARROW NO-BREAK → fine insécable (typographie FR avant : ; ! ?)
+\IfFileExists{newunicodechar.sty}{%
+  \usepackage{newunicodechar}
+  \newunicodechar{ }{\nobreakspace}      % U+00A0 (caractère réel NBSP ici)
+  \newunicodechar{ }{\nobreak\thinspace} % U+202F (caractère réel NNBSP ici)
+}{}
+
+% Fallback au cas où newunicodechar n'est pas dispo (rare dans CI)
+\catcode` =\active \protected\def {\nobreakspace}
+\catcode` =\active \protected\def {\nobreak\thinspace}
 
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
 % --- Espacement paragraphes ---
-$if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
-$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25\baselineskip}$endif$
+$if(parindent)$\setlength{\parindent}{$parindent$}$endif$
+$if(parskip)$\setlength{\parskip}{$parskip$}$endif$
 $if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
 
 % --- Microtypographie & justification ---

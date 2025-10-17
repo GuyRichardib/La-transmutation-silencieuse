@@ -7,6 +7,7 @@ mkdir -p dist
 COMMON_ARGS=(
   --metadata-file=book/book.yaml
   --resource-path=.:book:book/manuscript:assets
+  --lua-filter=scripts/sanitize-unicode.lua
   --lua-filter=scripts/include-files.lua
 )
 
