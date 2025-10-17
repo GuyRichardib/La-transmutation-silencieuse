@@ -32,6 +32,7 @@ jobs:
             texlive-latex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
+            texlive-lang-european \
             fonts-ebgaramond \
             poppler-utils
           sudo fc-cache -f -v
@@ -49,6 +50,16 @@ jobs:
         run: |
           chmod +x scripts/build.sh
           ./scripts/build.sh
+
+      - name: Dump intermediate TeX (debug)
+        if: always()
+        run: |
+          pandoc book/book.md -o dist/book.tex \
+            --metadata-file=book/book.yaml \
+            --resource-path=.:book:book/manuscript:assets \
+            --lua-filter=scripts/include-files.lua \
+            --lua-filter=scripts/sanitize-unicode.lua \
+            --template=assets/template.latex
 
       - name: Verify PDF page size (6x9 in = 432x648 pts)
         run: |
@@ -69,6 +80,7 @@ jobs:
           echo "------"
 
       - name: Upload artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: book-artifacts

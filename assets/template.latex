@@ -4,33 +4,23 @@
 
 \ifXeTeX
   \usepackage{fontspec}
-  % Normalize problematic Unicode spaces for XeTeX headings
-  \usepackage{newunicodechar}
-  \newunicodechar{ }{~}% U+00A0 no-break space
-  \newunicodechar{ }{\nobreak\thinspace}% U+202F narrow no-break space
-  \newunicodechar{—}{—}% ensure em-dash stays mapped
-  \defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz}
+  \defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz,Scale=MatchLowercase}
   $if(mainfont)$\setmainfont{$mainfont$}$endif$
+
   \usepackage{polyglossia}
   \setmainlanguage{french}
-  \usepackage{microtype}
-  \microtypesetup{protrusion=true, expansion=true}
-  \setlength\emergencystretch{2em}
-  \pretolerance=100
-  \tolerance=2000
-  \hfuzz=0.3pt
-  % Normalize problematic Unicode glyphs for XeTeX headings
+
   \usepackage{newunicodechar}
-  \newunicodechar{ }{\nobreak\thinspace}% U+202F fine no-break space
-  \newunicodechar{ }{~}% U+00A0 no-break space
-  \newunicodechar{’}{\textquoteright}% U+2019 right single quotation mark
-  \newunicodechar{‘}{\textquoteleft}% U+2018 left single quotation mark
-  \newunicodechar{“}{\textquotedblleft}% U+201C left double quotation mark
-  \newunicodechar{”}{\textquotedblright}% U+201D right double quotation mark
-  \newunicodechar{–}{\textendash}% U+2013 en dash
-  \newunicodechar{—}{\textemdash}% U+2014 em dash
-  \newunicodechar{…}{\ldots}% U+2026 ellipsis
-  \newunicodechar{́}{\'{}}% U+0301 combining acute accent
+  \newunicodechar{ }{\,}
+  \newunicodechar{ }{~}
+  \newunicodechar{«}{\guillemotleft}
+  \newunicodechar{»}{\guillemotright}
+  \newunicodechar{’}{\textquoteright}
+  \newunicodechar{–}{\textendash}
+  \newunicodechar{—}{\textemdash}
+  \newunicodechar{…}{\ldots}
+  \providecommand{\DeclareUnicodeCharacter}[2]{}
+
   \XeTeXgenerateactualtext=1
   \usepackage{sectsty}
   $if(headingfont)$\newfontfamily\HeadingFont{$headingfont$}[Renderer=Harfbuzz]$else$\newfontfamily\HeadingFont{EB Garamond}[Renderer=Harfbuzz]$endif$
@@ -42,19 +32,28 @@
   \allsectionsfont{\bfseries}
 \fi
 
+% --- Charger microtype uniquement si nécessaire ---
+\makeatletter
+\@ifpackageloaded{microtype}{}{%
+  \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+}
+\makeatother
+\providecommand{\microtypesetup}[1]{}
+
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
 % --- Espacement paragraphes ---
 $if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
-$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25em}$endif$
+$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.35em}$endif$
 $if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
 
 % --- Microtypographie & justification ---
-\usepackage[protrusion=true,expansion=false]{microtype}
-\microtypesetup{protrusion=true}
+\microtypesetup{protrusion=true,expansion=false}
 \setlength\emergencystretch{2em}
+\pretolerance=100
 \tolerance=2000
+\hfuzz=0.3pt
 \hyphenpenalty=200
 \exhyphenpenalty=50
 \lefthyphenmin=2
