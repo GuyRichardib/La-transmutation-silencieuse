@@ -4,23 +4,11 @@
 
 \ifXeTeX
   \usepackage{fontspec}
-  \defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz,Scale=MatchLowercase}
+  \defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz}
   $if(mainfont)$\setmainfont{$mainfont$}$endif$
 
   \usepackage{polyglossia}
   \setmainlanguage{french}
-
-  \usepackage{newunicodechar}
-  \newunicodechar{ }{\,}
-  \newunicodechar{ }{~}
-  \newunicodechar{«}{\guillemotleft}
-  \newunicodechar{»}{\guillemotright}
-  \newunicodechar{’}{\textquoteright}
-  \newunicodechar{–}{\textendash}
-  \newunicodechar{—}{\textemdash}
-  \newunicodechar{…}{\ldots}
-  \providecommand{\DeclareUnicodeCharacter}[2]{}
-
   \XeTeXgenerateactualtext=1
   \usepackage{sectsty}
   $if(headingfont)$\newfontfamily\HeadingFont{$headingfont$}[Renderer=Harfbuzz]$else$\newfontfamily\HeadingFont{EB Garamond}[Renderer=Harfbuzz]$endif$
@@ -40,12 +28,17 @@
 \makeatother
 \providecommand{\microtypesetup}[1]{}
 
+% --- Normaliser les espaces Unicode courants ---
+\IfFileExists{newunicodechar.sty}{\usepackage{newunicodechar}}{}
+\DeclareUnicodeCharacter{202F}{\,}
+\DeclareUnicodeCharacter{00A0}{~}
+
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
 % --- Espacement paragraphes ---
 $if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
-$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.35em}$endif$
+$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25\baselineskip}$endif$
 $if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
 
 % --- Microtypographie & justification ---
