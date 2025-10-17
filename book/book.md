@@ -1,6 +1,8 @@
 \newpage
 @include(manuscript/00-frontmatter.md)
 \newpage
+@include(manuscript/00-preface.md)
+\newpage
 @include(manuscript/01-acte-01.md)
 \newpage
 @include(manuscript/02-ch01.md)
