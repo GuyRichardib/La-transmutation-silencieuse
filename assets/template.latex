@@ -4,6 +4,11 @@
 
 \ifXeTeX
   \usepackage{fontspec}
+  % Normalize problematic Unicode spaces for XeTeX headings
+  \usepackage{newunicodechar}
+  \newunicodechar{ }{~}% U+00A0 no-break space
+  \newunicodechar{ }{\nobreak\thinspace}% U+202F narrow no-break space
+  \newunicodechar{—}{—}% ensure em-dash stays mapped
   \defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz}
   $if(mainfont)$\setmainfont{$mainfont$}$endif$
   \usepackage{polyglossia}
@@ -35,23 +40,6 @@
   \usepackage[T1]{fontenc}
   \usepackage{sectsty}
   \allsectionsfont{\bfseries}
-  \usepackage{microtype}
-  \microtypesetup{protrusion=true, expansion=true}
-  \setlength\emergencystretch{2em}
-  \pretolerance=100
-  \tolerance=2000
-  \hfuzz=0.3pt
-  \usepackage{newunicodechar}
-  \newunicodechar{ }{\nobreak\thinspace}
-  \newunicodechar{ }{~}
-  \newunicodechar{’}{\textquoteright}
-  \newunicodechar{‘}{\textquoteleft}
-  \newunicodechar{“}{\textquotedblleft}
-  \newunicodechar{”}{\textquotedblright}
-  \newunicodechar{–}{\textendash}
-  \newunicodechar{—}{\textemdash}
-  \newunicodechar{…}{\ldots}
-  \newunicodechar{́}{\'{}}
 \fi
 
 \usepackage{geometry}
@@ -59,10 +47,14 @@ $for(geometry)$\geometry{$geometry$}$endfor$
 
 % --- Espacement paragraphes ---
 $if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
-$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25em plus 0.1em minus 0.05em}$endif$
+$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25em}$endif$
 $if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
 
 % --- Microtypographie & justification ---
+\usepackage[protrusion=true,expansion=false]{microtype}
+\microtypesetup{protrusion=true}
+\setlength\emergencystretch{2em}
+\tolerance=2000
 \hyphenpenalty=200
 \exhyphenpenalty=50
 \lefthyphenmin=2
