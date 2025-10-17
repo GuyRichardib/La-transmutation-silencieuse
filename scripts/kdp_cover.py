@@ -14,6 +14,7 @@ import re
 import subprocess
 import sys
 import textwrap
+from pathlib import Path
 
 THICKNESS_IN = {  # per-page thickness (inches)
     "white": 0.002252,   # KDP white B/W
@@ -74,15 +75,64 @@ def write_report(outdir, data):
     print(txt)
 
 
+def _tail_log(log_path: Path, lines: int = 120) -> str:
+    if not log_path.exists():
+        return ""
+    try:
+        content = log_path.read_text(errors="ignore").splitlines()
+    except OSError:
+        return ""
+    return "\n".join(content[-lines:])
+
+
+def run_xelatex(tex_path: Path, outdir: Path) -> None:
+    cmd = [
+        "xelatex",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-file-line-error",
+        "-output-directory",
+        str(outdir),
+        str(tex_path),
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        log_tail = _tail_log(outdir / f"{tex_path.stem}.log")
+        raise RuntimeError(
+            "XeLaTeX failed while generating the cover template.\n"
+            f"STDOUT:\n{result.stdout}\n"
+            f"STDERR:\n{result.stderr}\n"
+            "--- cover-template.log (tail) ---\n"
+            f"{log_tail}\n"
+        )
+
+
 def write_template_pdf(outdir, trim_w_in, trim_h_in, bleed_in, spine_in, width_in, height_in):
     tex = rf"""
 \documentclass{{article}}
-\usepackage[paperwidth={width_in:.5f}in,paperheight={height_in:.5f}in,margin=0in]{{geometry}}
+\usepackage{{iftex}}
+\usepackage{{fontspec}}
+\usepackage{{geometry}}
+\usepackage{{xcolor}}
+\usepackage{{graphicx}}
 \usepackage{{tikz}}
+\usepackage{{ifthen}}
+\usepackage{{calc}}
+\IfFileExists{{newunicodechar.sty}}{{\usepackage{{newunicodechar}}}}{{}}
+\ifdefined\newunicodechar
+  \newunicodechar{{^^^^00a0}}{{\nobreakspace}}
+  \newunicodechar{{^^^^202f}}{{\nobreak\thinspace}}
+  \newunicodechar{{^^^^2009}}{{\thinspace}}
+\fi
+\geometry{{
+  paperwidth={width_in:.5f}in,
+  paperheight={height_in:.5f}in,
+  margin=0in
+}}
 \pagestyle{{empty}}
 \begin{{document}}
 \begin{{tikzpicture}}[remember picture,overlay]
-% Convenience lengths (in inches -> cm via TikZ unit conversion)
+% Convenience lengths (in inches)
 \def\bleed{{{bleed_in}}}
 \def\trimW{{{trim_w_in}}}
 \def\trimH{{{trim_h_in}}}
@@ -116,22 +166,17 @@ def write_template_pdf(outdir, trim_w_in, trim_h_in, bleed_in, spine_in, width_i
 \end{{tikzpicture}}
 \end{{document}}
 """
-    tex_path = os.path.join(outdir, "cover-template.tex")
+    outdir_path = Path(outdir)
+    tex_path = outdir_path / "cover-template.tex"
+    os.makedirs(outdir, exist_ok=True)
     with open(tex_path, "w", encoding="utf-8") as f:
         f.write(tex)
-    # Compile
-    subprocess.run(
-        ["xelatex", "-interaction=nonstopmode", "-output-directory", outdir, tex_path],
-        check=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
+    run_xelatex(tex_path, outdir_path)
     # Clean auxiliary files
-    for ext in (".aux", ".log" , ".out"):
-        aux_path = os.path.join(outdir, "cover-template" + ext)
-        if os.path.exists(aux_path):
-            os.remove(aux_path)
+    for ext in (".aux", ".log", ".out"):
+        aux_path = outdir_path / f"cover-template{ext}"
+        if aux_path.exists():
+            aux_path.unlink()
 
 
 def main():
