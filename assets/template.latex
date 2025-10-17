@@ -8,20 +8,81 @@
   $if(mainfont)$\setmainfont{$mainfont$}$endif$
   \usepackage{polyglossia}
   \setmainlanguage{french}
+  \usepackage{microtype}
+  \microtypesetup{protrusion=true, expansion=true}
+  \setlength\emergencystretch{2em}
+  \pretolerance=100
+  \tolerance=2000
+  \hfuzz=0.3pt
+  % Normalize problematic Unicode glyphs for XeTeX headings
+  \usepackage{newunicodechar}
+  \newunicodechar{ }{\nobreak\thinspace}% U+202F fine no-break space
+  \newunicodechar{ }{~}% U+00A0 no-break space
+  \newunicodechar{’}{\textquoteright}% U+2019 right single quotation mark
+  \newunicodechar{‘}{\textquoteleft}% U+2018 left single quotation mark
+  \newunicodechar{“}{\textquotedblleft}% U+201C left double quotation mark
+  \newunicodechar{”}{\textquotedblright}% U+201D right double quotation mark
+  \newunicodechar{–}{\textendash}% U+2013 en dash
+  \newunicodechar{—}{\textemdash}% U+2014 em dash
+  \newunicodechar{…}{\ldots}% U+2026 ellipsis
+  \newunicodechar{́}{\'{}}% U+0301 combining acute accent
   \XeTeXgenerateactualtext=1
+  \usepackage{sectsty}
+  $if(headingfont)$\newfontfamily\HeadingFont{$headingfont$}[Renderer=Harfbuzz]$else$\newfontfamily\HeadingFont{EB Garamond}[Renderer=Harfbuzz]$endif$
+  \allsectionsfont{\HeadingFont\bfseries}
 \else
   \usepackage[utf8]{inputenc}
   \usepackage[T1]{fontenc}
+  \usepackage{sectsty}
+  \allsectionsfont{\bfseries}
+  \usepackage{microtype}
+  \microtypesetup{protrusion=true, expansion=true}
+  \setlength\emergencystretch{2em}
+  \pretolerance=100
+  \tolerance=2000
+  \hfuzz=0.3pt
+  \usepackage{newunicodechar}
+  \newunicodechar{ }{\nobreak\thinspace}
+  \newunicodechar{ }{~}
+  \newunicodechar{’}{\textquoteright}
+  \newunicodechar{‘}{\textquoteleft}
+  \newunicodechar{“}{\textquotedblleft}
+  \newunicodechar{”}{\textquotedblright}
+  \newunicodechar{–}{\textendash}
+  \newunicodechar{—}{\textemdash}
+  \newunicodechar{…}{\ldots}
+  \newunicodechar{́}{\'{}}
 \fi
 
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
-\usepackage{setspace}
-$if(linestretch)$\setstretch{$linestretch$}$endif$
+% --- Espacement paragraphes ---
+$if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
+$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25em plus 0.1em minus 0.05em}$endif$
+$if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
+
+% --- Microtypographie & justification ---
+\hyphenpenalty=200
+\exhyphenpenalty=50
+\lefthyphenmin=2
+\righthyphenmin=2
+\raggedbottom
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
 
 \usepackage[unicode]{hyperref}
 \usepackage{bookmark}
+\hypersetup{
+  pdftitle={$title$},
+  pdfauthor={$for(author)$$author$$sep$, $endfor$},
+  pdfsubject={$subject$},
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+  unicode=true,
+  hidelinks,
+  breaklinks=true
+}
 
 \usepackage{fancyhdr}
 $if(subtitle)$\usepackage{titling}$endif$
@@ -39,9 +100,19 @@ $if(footer-right)$\fancyfoot[RO]{$footer-right$}$endif$
   $if(footer-right)$\fancyfoot[C]{$footer-right$}$endif$
 }
 
+% --- Numérotation des sections ---
+$if(number-sections)$
+  % Section numbering handled by Pandoc
+$else$
+  \setcounter{secnumdepth}{0}
+$endif$
+
 \usepackage{etoolbox}
-\preto{\section}{\clearpage}
-\preto{\subsection}{\clearpage}
+\makeatletter
+\newcommand{\ChapterBreak}{\if@twoside\cleardoublepage\else\clearpage\fi}
+\makeatother
+\preto{\section}{\ChapterBreak}
+\preto{\subsection}{\ChapterBreak}
 
 \begin{document}
 
@@ -53,7 +124,11 @@ $if(author)$\author{$for(author)$$author$$sep$ \and $endfor$}$endif$
 $if(date)$\date{$date$}$else$\date{}$endif$
 $if(title)$\maketitle$endif$
 
+$if(frontmatter)$\frontmatter$endif$
+
 $if(toc)$\tableofcontents\newpage$endif$
+
+$if(frontmatter)$\mainmatter$endif$
 
 $body$
 

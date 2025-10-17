@@ -5,6 +5,7 @@ lang: fr
 toc: true
 toc-depth: 2
 number-sections: false
+frontmatter: true
 epub-metadata: styles/epub-metadata.xml
 epub-stylesheet: styles/epub.css
 documentclass: "book"
@@ -18,7 +19,21 @@ geometry:
   - "bottom=1in"
   - "inner=0.75in"
   - "outer=0.5in"
-linestretch: 1.3
+linestretch: 1.32
+parindent: "1.2em"
+parskip: "0.25em plus 0.1em minus 0.05em"
+publisher: "Autoédition"
+date: "2025-01-01"
+rights: "© 2025 Anonyme. Tous droits réservés."
+subject: "Fiction / Science-Fiction"
+keywords:
+  - roman
+  - science-fiction
+  - dissonance
+  - silence
+identifier:
+  - type: ISBN
+    text: 979-0000000000
 header-left: "Anonyme"
 header-right: "Le Secret de la Transmutation Silencieuse"
 footer-right: "\\thepage"
