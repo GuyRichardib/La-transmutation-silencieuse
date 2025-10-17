@@ -23,12 +23,7 @@
 \ifPDFTeX
   \IfFileExists{microtype.sty}{\usepackage[tracking=true]{microtype}}{}
 \else
-  % Eviter les "Option clash" si microtype est préchargé par Pandoc ou un header-includes.
-  \makeatletter
-  \@ifpackageloaded{microtype}{}{
-    \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
-  }
-  \makeatother
+  \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
 \fi
 \providecommand{\microtypesetup}[1]{}
 \ifPDFTeX
