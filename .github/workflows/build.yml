@@ -32,9 +32,7 @@ jobs:
             texlive-xetex \
             texlive-latex-recommended \
             texlive-pictures \
-            texlive-graphics \
             texlive-latex-extra \
-            texlive-pictures \
             texlive-fonts-recommended \
             texlive-fonts-extra \
             fonts-ebgaramond \
