@@ -19,21 +19,9 @@ geometry:
   - "bottom=1in"
   - "inner=0.75in"
   - "outer=0.5in"
-linestretch: 1.42
+linestretch: 1.38
 parindent: "1.2em"
-parskip: "0.35em"
-publisher: "Autoédition"
-date: "2025-01-01"
-rights: "© 2025 Anonyme. Tous droits réservés."
-subject: "Fiction / Science-Fiction"
-keywords:
-  - roman
-  - science-fiction
-  - dissonance
-  - silence
-identifier:
-  - type: ISBN
-    text: 979-0000000000
+parskip: "0.25em"
 header-left: "Anonyme"
 header-right: "Le Secret de la Transmutation Silencieuse"
 footer-right: "\\thepage"
