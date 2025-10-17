@@ -45,6 +45,24 @@ jobs:
       - name: Normalize Unicode (NFC)
         run: python3 scripts/normalize_unicode.py
 
+      - name: Smoke-test Unicode thin spaces (XeLaTeX)
+        run: |
+          cat > /tmp/utf8-smoke.tex <<'TEX'
+          \documentclass{book}
+          \usepackage{iftex}
+          \IfFileExists{newunicodechar.sty}{\usepackage{newunicodechar}}{}
+          \ifdefined\newunicodechar
+            \newunicodechar{^^^^00a0}{\nobreakspace}
+            \newunicodechar{^^^^202f}{\nobreak\thinspace}
+            \newunicodechar{^^^^2009}{\thinspace}
+          \fi
+          \begin{document}
+          Préface\,! ; ? «\,guillemet\,»
+          Chapitre~1 — Chambre d'Orbes
+          \end{document}
+          TEX
+          xelatex -halt-on-error /tmp/utf8-smoke.tex
+
       - name: Build all formats
         run: |
           chmod +x scripts/build.sh
