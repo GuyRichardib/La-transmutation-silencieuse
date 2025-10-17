@@ -19,36 +19,30 @@
   \allsectionsfont{\bfseries}
 \fi
 
-% --- Microtype : passer les options AVANT de charger, et ne le charger qu'une fois.
-\PassOptionsToPackage{final,protrusion=true,expansion=true,tracking=true}{microtype}
-\IfFileExists{microtype.sty}{%
-  \usepackage{microtype}%
-  \UseMicrotypeSet[protrusion]{basicmath}%
-}{}
+% --- Microtype : ne l'activer que lorsque pdfTeX est utilisé.
+\ifPDFTeX
+  \usepackage[protrusion=true,expansion=true]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath}
+  \microtypesetup{protrusion=true,expansion=false}
+\fi
 
-% --- Normaliser les espaces Unicode courants (UTF-8, XeLaTeX).
-% U+00A0 NO-BREAK SPACE  → espace insécable "normale"
-% U+202F NARROW NO-BREAK → fine insécable (typographie FR avant : ; ! ?)
-\IfFileExists{newunicodechar.sty}{%
-  \usepackage{newunicodechar}
-  \newunicodechar{ }{\nobreakspace}      % U+00A0 (caractère réel NBSP ici)
-  \newunicodechar{ }{\nobreak\thinspace} % U+202F (caractère réel NNBSP ici)
-}{}
-
-% Fallback au cas où newunicodechar n'est pas dispo (rare dans CI)
-\catcode` =\active \protected\def {\nobreakspace}
-\catcode` =\active \protected\def {\nobreak\thinspace}
+% --- Normaliser les espaces Unicode courants.
+\IfFileExists{newunicodechar.sty}{\usepackage{newunicodechar}}{}
+\DeclareUnicodeCharacter{00A0}{\nobreakspace}
+\DeclareUnicodeCharacter{202F}{\nobreak\thinspace}
+\DeclareUnicodeCharacter{2009}{\thinspace}
 
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
 % --- Espacement paragraphes ---
+\setlength{\parskip}{0.3em plus 0.1em minus 0.05em}
+\setlength{\parindent}{1.2em}
 $if(parindent)$\setlength{\parindent}{$parindent$}$endif$
 $if(parskip)$\setlength{\parskip}{$parskip$}$endif$
 $if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
 
 % --- Microtypographie & justification ---
-\microtypesetup{protrusion=true,expansion=false}
 \setlength\emergencystretch{2em}
 \pretolerance=100
 \tolerance=2000
