@@ -1,74 +1,89 @@
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(classoption)$$classoption$$endif$]{$documentclass$}
 
-\usepackage{geometry}
-$for(geometry)$
-\geometry{$geometry$}
-$endfor$
+\usepackage{iftex}
 
-\usepackage{fontspec}
-$if(mainfont)$
-\setmainfont{$mainfont$}
-$endif$
+\ifXeTeX
+  \usepackage{fontspec}
+  \defaultfontfeatures{Ligatures=TeX,Renderer=Harfbuzz}
+  $if(mainfont)$\setmainfont{$mainfont$}$endif$
+  \usepackage{polyglossia}
+  \setmainlanguage{french}
+  \XeTeXgenerateactualtext=1
+\else
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+\fi
+
+\usepackage{geometry}
+$for(geometry)$\geometry{$geometry$}$endfor$
+
+% --- Microtypographie et hyphénation ---
+\usepackage[protrusion=true,expansion=false]{microtype}
+\microtypesetup{protrusion=true}
+\setlength\emergencystretch{2em}
+\tolerance=2000
+\hyphenpenalty=200
+\exhyphenpenalty=50
+\lefthyphenmin=2
+\righthyphenmin=2
+
+% --- Espacement des paragraphes ---
+$if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
+$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25em}$endif$
 
 \usepackage{setspace}
-$if(linestretch)$
-\setstretch{$linestretch$}
-$endif$
+$if(linestretch)$\setstretch{$linestretch$}$endif$
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\raggedbottom
+
+\usepackage[unicode]{hyperref}
+\usepackage{bookmark}
 
 \usepackage{fancyhdr}
-$if(subtitle)$
-\usepackage{titling}
-$endif$
+$if(subtitle)$\usepackage{titling}$endif$
 \pagestyle{fancy}
 \fancyhf{}
-$if(header-left)$
-\fancyhead[LE]{$header-left$}
-$endif$
-$if(header-right)$
-\fancyhead[RO]{$header-right$}
-$endif$
-$if(footer-left)$
-\fancyfoot[LE]{$footer-left$}
-$endif$
-$if(footer-right)$
-\fancyfoot[RO]{$footer-right$}
-$endif$
+$if(header-left)$\fancyhead[LE]{\textit{$header-left$}}$endif$
+$if(header-right)$\fancyhead[RO]{\textit{$header-right$}}$endif$
+$if(footer-left)$\fancyfoot[LE]{$footer-left$}$endif$
+$if(footer-right)$\fancyfoot[RO]{$footer-right$}$endif$
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0pt}
-
 \fancypagestyle{plain}{%
   \fancyhf{}
   \renewcommand{\headrulewidth}{0pt}%
-  $if(footer-right)$
-  \fancyfoot[C]{$footer-right$}
-  $endif$
+  $if(footer-right)$\fancyfoot[C]{$footer-right$}$endif$
 }
 
-$if(title)$
-\title{$title$}
-$endif$
-$if(subtitle)$
-\subtitle{$subtitle$}
-$endif$
-$if(author)$
-\author{$for(author)$$author$$sep$ \and $endfor$}
-$endif$
-$if(date)$
-\date{$date$}
+\usepackage{etoolbox}
+\makeatletter
+\newcommand{\ChapterBreak}{%
+  \if@twoside\cleardoublepage\else\clearpage\fi
+}
+\makeatother
+\preto{\section}{\ChapterBreak}
+\preto{\subsection}{\ChapterBreak}
+
+$if(number-sections)$
+% Numérotation maintenue
 $else$
-\date{}
+\setcounter{secnumdepth}{0}
 $endif$
 
 \begin{document}
 
 $if(title)$
-\maketitle
+\title{$title$}
+$if(subtitle)$\subtitle{$subtitle$}$endif$
 $endif$
+$if(author)$\author{$for(author)$$author$$sep$ \and $endfor$}$endif$
+$if(date)$\date{$date$}$else$\date{}$endif$
+$if(title)$\maketitle$endif$
 
-$if(toc)$
-\tableofcontents
-\newpage
-$endif$
+$if(toc)$\tableofcontents\newpage$endif$
 
 $body$
 
