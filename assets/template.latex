@@ -19,25 +19,39 @@
   \allsectionsfont{\bfseries}
 \fi
 
-% --- Charger microtype uniquement si nécessaire ---
-\makeatletter
-\@ifpackageloaded{microtype}{}{%
-  \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
-}
-\makeatother
+% --- Microtype : adapter selon le moteur TeX --------------------------------
+\ifPDFTeX
+  \IfFileExists{microtype.sty}{\usepackage[tracking=true]{microtype}}{}
+\else
+  % Eviter les "Option clash" si microtype est préchargé par Pandoc ou un header-includes.
+  \makeatletter
+  \@ifpackageloaded{microtype}{}{
+    \IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+  }
+  \makeatother
+\fi
 \providecommand{\microtypesetup}[1]{}
+\ifPDFTeX
+  % pdfTeX peut gérer le tracking, rien à modifier
+\else
+  % Xe/LuaLaTeX : désactiver le tracking pour éviter les avertissements
+  \microtypesetup{tracking=false}
+\fi
 
-% --- Normaliser les espaces Unicode courants ---
+% --- Normaliser les espaces Unicode courants --------------------------------
 \IfFileExists{newunicodechar.sty}{\usepackage{newunicodechar}}{}
-\DeclareUnicodeCharacter{202F}{\,}
-\DeclareUnicodeCharacter{00A0}{~}
+\ifdefined\newunicodechar
+  \newunicodechar{^^^^00a0}{\nobreakspace}
+  \newunicodechar{^^^^202f}{\nobreak\thinspace}
+  \newunicodechar{^^^^2009}{\thinspace}
+\fi
 
 \usepackage{geometry}
 $for(geometry)$\geometry{$geometry$}$endfor$
 
 % --- Espacement paragraphes ---
-$if(parindent)$\setlength{\parindent}{$parindent$}$else$\setlength{\parindent}{1.2em}$endif$
-$if(parskip)$\setlength{\parskip}{$parskip$}$else$\setlength{\parskip}{0.25\baselineskip}$endif$
+\setlength{\parindent}{$if(parindent)$$parindent$$else$1.2em$endif$}
+\setlength{\parskip}{$if(parskip)$$parskip$$else$0em$endif$}
 $if(linestretch)$\usepackage{setspace}\setstretch{$linestretch$}$endif$
 
 % --- Microtypographie & justification ---
