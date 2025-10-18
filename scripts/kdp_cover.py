@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 import textwrap
@@ -29,12 +30,45 @@ def run(cmd):
     return subprocess.run(cmd, check=True, capture_output=True, text=True).stdout
 
 
-def pages_from_pdf(pdf_path: str) -> int:
-    out = run(["pdfinfo", pdf_path])
+def _pages_from_pdfinfo(pdf_path: str) -> Optional[int]:
+    """Return the page count using pdfinfo when available."""
+
+    if not shutil.which("pdfinfo"):
+        return None
+
+    try:
+        out = run(["pdfinfo", pdf_path])
+    except FileNotFoundError:
+        # Race condition: pdfinfo removed after which() check.
+        return None
+    except subprocess.CalledProcessError as exc:  # pragma: no cover - rare failure
+        raise RuntimeError(
+            "pdfinfo a échoué en lisant le PDF intérieur. Sortie:\n"
+            f"{exc.stdout}\n{exc.stderr}"
+        ) from exc
+
     m = re.search(r"Pages:\s+(\d+)", out)
     if not m:
         raise RuntimeError("Impossible de lire le nombre de pages via pdfinfo.")
     return int(m.group(1))
+
+
+def pages_from_pdf(pdf_path: str) -> int:
+    pages = _pages_from_pdfinfo(pdf_path)
+    if pages is not None:
+        return pages
+
+    try:
+        from pypdf import PdfReader  # type: ignore
+    except ImportError as exc:  # pragma: no cover - optional dependency
+        raise SystemExit(
+            "Impossible de déterminer le nombre de pages : ni 'pdfinfo' ni la bibliothèque pypdf ne sont disponibles.\n"
+            "Installez poppler-utils ou exécutez 'pip install pypdf'."
+        ) from exc
+
+    with open(pdf_path, "rb") as fh:
+        reader = PdfReader(fh)
+        return len(reader.pages)
 
 
 def to_mm(inches: float) -> float:
