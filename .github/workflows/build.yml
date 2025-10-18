@@ -80,6 +80,59 @@ jobs:
           TEX
           xelatex -halt-on-error /tmp/utf8-smoke.tex
 
+      - name: Verify binary assets referenced by manuscript
+        run: |
+          python3 - <<'PY'
+import pathlib
+import re
+import sys
+
+markdown_files = [pathlib.Path("book/book.md")] + sorted(pathlib.Path("book/manuscript").glob("*.md"))
+image_pattern = re.compile(r"!\[[^\]]*\]\(([^)]+)\)")
+references = set()
+
+for md_path in markdown_files:
+    if not md_path.exists():
+        continue
+    text = md_path.read_text(encoding="utf-8", errors="ignore")
+    for match in image_pattern.findall(text):
+        target = match.split()[0].strip()
+        if not target or target.startswith("data:"):
+            continue
+        if any(target.startswith(prefix) for prefix in ("http://", "https://")):
+            continue
+        references.add(target)
+
+search_roots = [pathlib.Path("."), pathlib.Path("book"), pathlib.Path("assets"), pathlib.Path("book/manuscript"), pathlib.Path("book/assets")]
+issues = []
+
+for ref in sorted(references):
+    found_path = None
+    for root in search_roots:
+        candidate = (root / ref).resolve()
+        try:
+            candidate.relative_to(pathlib.Path.cwd())
+        except ValueError:
+            continue
+        if candidate.exists():
+            found_path = candidate
+            break
+    if not found_path:
+        issues.append(f"{ref} (introuvable)")
+        continue
+    size = found_path.stat().st_size
+    if size < 1024:
+        issues.append(f"{found_path} ({size} octets)")
+
+if issues:
+    print("[assets] Problèmes détectés sur les ressources référencées :")
+    for item in issues:
+        print(" -", item)
+    sys.exit(1)
+else:
+    print("[assets] Toutes les images référencées semblent valides (>= 1 KiB).")
+PY
+
       - name: Build all formats
         run: |
           chmod +x scripts/build.sh
