@@ -1,1 +1,6 @@
-# To ensure app dependencies are ported from your virtual environment/host machine into your container, run 'pip freeze > requirements.txt' in the terminal to overwrite this file
+beautifulsoup4>=4.12.3
+duckduckgo-search>=5.3.1
+PyYAML>=6.0.1
+pillow>=10.3.0
+pypdf>=3.17.1
+trafilatura>=1.7.0
