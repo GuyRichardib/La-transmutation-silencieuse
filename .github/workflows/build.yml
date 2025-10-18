@@ -80,6 +80,58 @@ jobs:
           TEX
           xelatex -halt-on-error /tmp/utf8-smoke.tex
 
+      - name: Verify binary assets referenced by manuscript
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          import re
+          import sys
+
+          # Collecte des fichiers markdown (livre + manuscrits)
+          markdown_files = [pathlib.Path("book/book.md")] + sorted(pathlib.Path("book/manuscript").glob("*.md"))
+
+          # Regex liens markdown ![alt](path)
+          image_pattern = re.compile(r'!\[[^\]]*\]\(([^)\s]+)')
+
+          references = set()
+          for md_path in markdown_files:
+            if not md_path.exists():
+              continue
+            text = md_path.read_text(encoding="utf-8", errors="ignore")
+            for m in image_pattern.findall(text):
+              # retire un éventuel titre après le chemin: (path "title")
+              path_only = m.split('"')[0].strip()
+              references.add(path_only)
+
+          # Résolution avec resource-path .:book:assets
+          bases = [pathlib.Path("."), pathlib.Path("book"), pathlib.Path("assets")]
+          missing_or_tiny = []
+          for rel in sorted(references):
+            resolved = None
+            for base in bases:
+              cand = base / rel
+              if cand.exists():
+                resolved = cand
+                break
+            if resolved is None:
+              missing_or_tiny.append(f"{rel} (missing)")
+              continue
+            try:
+              size = resolved.stat().st_size
+            except Exception:
+              size = 0
+            if size < 1024:  # < 1 Ko → suspect
+              missing_or_tiny.append(f"{resolved} ({size} bytes)")
+
+          if missing_or_tiny:
+            print("[assets] Potentially invalid images:")
+            for x in missing_or_tiny:
+              print(" -", x)
+            sys.exit(1)
+          else:
+            print("[assets] All referenced images look OK")
+          PY
+
       - name: Build all formats
         run: |
           chmod +x scripts/build.sh
