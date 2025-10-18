@@ -1,0 +1,26 @@
+FROM mcr.microsoft.com/devcontainers/python:3.11
+
+# Paquets système utiles (ollama + build basics)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      ca-certificates \
+      curl \
+      git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Installer Ollama (binaire autonome)
+RUN curl -fsSL https://ollama.com/download/ollama-linux-amd64.tgz | \
+    tar -xz -C /usr/local/bin && \
+    chmod +x /usr/local/bin/ollama
+
+# Pré-installer les dépendances Python légères utilisées hors LLM
+RUN pip install --no-cache-dir \
+      duckduckgo-search \
+      trafilatura \
+      beautifulsoup4 \
+      pyyaml
+
+ENV OLLAMA_HOST=0.0.0.0
+
+# Dossier de travail par défaut
+WORKDIR /workspaces/La-transmutation-silencieuse

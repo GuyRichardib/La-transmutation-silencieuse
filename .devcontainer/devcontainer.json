@@ -1,0 +1,26 @@
+{
+  "name": "La transmutation silencieuse",
+  "build": {
+    "dockerfile": "../Dockerfile.ollama"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/pandoc:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "james-yu.latex-workshop"
+      ]
+    }
+  },
+  "forwardPorts": [11434],
+  "remoteEnv": {
+    "USE_LLM": "1"
+  },
+  "postCreateCommand": "ollama serve >/tmp/ollama.log 2>&1 & sleep 2 && ollama pull phi3:mini || true"
+}

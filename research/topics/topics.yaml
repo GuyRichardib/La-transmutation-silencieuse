@@ -1,0 +1,14 @@
+actes:
+  - acte: I
+    chapitres:
+      - id: ch01
+        titre: "Chambre d’Orbes"
+        sujets:
+          - "résonance mécanique / accordeurs"
+          - "catégorie ‘silence’ en typographie & musique"
+        live_web: true
+      - id: ch02
+        titre: "Cartographie des Silences"
+        sujets:
+          - "cartes vibratoires / métaphores scientifiques"
+        live_web: true
