@@ -240,6 +240,7 @@ def write_template_pdf(
 \usepackage{{iftex}}
 \usepackage{{fontspec}}
 \usepackage{{geometry}}
+\usepackage{{graphicx}}
 \usepackage{{xcolor}}
 \usepackage{{tikz}}
 \IfFileExists{{newunicodechar.sty}}{{\usepackage{{newunicodechar}}}}{{}}
