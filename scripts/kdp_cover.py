@@ -13,7 +13,6 @@ import os
 import re
 import shutil
 import subprocess
-import sys
 import textwrap
 from pathlib import Path
 from typing import Optional
@@ -28,6 +27,63 @@ DEFAULT_BLEED_IN = 0.125  # KDP cover bleed (all sides)
 
 def run(cmd):
     return subprocess.run(cmd, check=True, capture_output=True, text=True).stdout
+
+
+def _tex_escape(path: str) -> str:
+    """Escape a subset of TeX special characters in file paths."""
+
+    return (
+        path.replace("\\", r"/")
+        .replace("#", r"\#")
+        .replace("%", r"\%")
+        .replace("&", r"\&")
+        .replace("{", r"\{")
+        .replace("}", r"\}")
+    )
+
+
+def prepare_cover_image(
+    cover_path: Optional[str],
+    full_width_in: float,
+    full_height_in: float,
+    dpi: int = 300,
+) -> Optional[str]:
+    """
+    Return a usable path to a cover image, or None when unavailable.
+
+    If Pillow is installed we emit a bit of diagnostic information about the
+    provided artwork dimensions, but the function never fails hard when the
+    dependency is missing. XeLaTeX will scale the image at compile time.
+    """
+
+    if not cover_path:
+        print("[cover] no cover image provided; proceeding with template only")
+        return None
+
+    path = Path(cover_path)
+    if not path.exists():
+        print(f"[cover] WARNING: file not found: {path!s}; proceeding without artwork")
+        return None
+
+    try:
+        from PIL import Image  # type: ignore
+
+        with Image.open(path) as im:
+            target_px = (
+                int(round(full_width_in * dpi)),
+                int(round(full_height_in * dpi)),
+            )
+            print(
+                f"[cover] image {path.name}: {im.size[0]}x{im.size[1]} px "
+                f"(target ~{target_px[0]}x{target_px[1]} px @ {dpi} dpi)"
+            )
+    except Exception as exc:  # pragma: no cover - purely informational
+        print(
+            f"[cover] note: Pillow not available or failed ({exc}); "
+            "using LaTeX scaling at compile time"
+        )
+
+    return str(path)
 
 
 def _pages_from_pdfinfo(pdf_path: str) -> Optional[int]:
@@ -112,11 +168,7 @@ def write_report(outdir, data):
             f"""
 
     Image de couverture:
-      - Source: {cover_image['source']}
-      - Sortie: {cover_image['output']}
-      - Résolution cible: {cover_image['width_px']} px × {cover_image['height_px']} px @ {cover_image['dpi']} DPI
-      - Ratio original: {cover_image['original_ratio']:.4f} — Ratio cible: {cover_image['target_ratio']:.4f}
-      - Ajustement: {'recadrage centré' if cover_image['cropped'] else 'redimensionnement'}
+      - Source: {cover_image}
     """.rstrip()
         )
     with open(os.path.join(outdir, "kdp_cover_report.txt"), "w", encoding="utf-8") as f:
@@ -162,7 +214,16 @@ def _fmt(num: float) -> str:
     return f"{num:.5f}".rstrip("0").rstrip(".")
 
 
-def write_template_pdf(outdir, trim_w_in, trim_h_in, bleed_in, spine_in, width_in, height_in):
+def write_template_pdf(
+    outdir,
+    trim_w_in,
+    trim_h_in,
+    bleed_in,
+    spine_in,
+    width_in,
+    height_in,
+    background_image: Optional[str] = None,
+):
     # Pre-compute key coordinates (in inches) so TikZ only receives literals and
     # avoids heavy runtime arithmetic that previously exhausted TeX's save stack.
     safe_in = 0.25
@@ -179,6 +240,7 @@ def write_template_pdf(outdir, trim_w_in, trim_h_in, bleed_in, spine_in, width_i
 \usepackage{{iftex}}
 \usepackage{{fontspec}}
 \usepackage{{geometry}}
+\usepackage{{graphicx}}
 \usepackage{{xcolor}}
 \usepackage{{tikz}}
 \IfFileExists{{newunicodechar.sty}}{{\usepackage{{newunicodechar}}}}{{}}
@@ -195,6 +257,18 @@ def write_template_pdf(outdir, trim_w_in, trim_h_in, bleed_in, spine_in, width_i
 \pagestyle{{empty}}
 \begin{{document}}
 \begin{{tikzpicture}}[remember picture,overlay,x=1in,y=1in]
+
+"""
+
+    if background_image:
+        tex += rf"""
+% Artwork layer (scaled to the full canvas)
+\node[anchor=south west, inner sep=0pt] at (0,0){{%
+  \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{{{_tex_escape(background_image)}}}%
+}};
+"""
+
+    tex += rf"""
 
 % Outer page (bleed edge)
 \draw[gray!50, line width=0.3pt] (0,0) rectangle ({_fmt(width_in)},{_fmt(height_in)});
@@ -261,19 +335,12 @@ def main():
     pages = pages_from_pdf(args.pdf)
     spine_in, width_in, height_in = compute(trim_w_in, trim_h_in, args.paper, pages, args.bleed)
 
-    outdir_path = Path(args.out)
-
-    cover_image_info = None
-    background_rel = None
-    if args.cover_image:
-        cover_image_info = prepare_cover_image(
-            Path(args.cover_image),
-            outdir_path,
-            width_in,
-            height_in,
-            args.cover_dpi,
-        )
-        background_rel = str((outdir_path / cover_image_info["output"]).resolve())
+    cover_image_path = prepare_cover_image(
+        args.cover_image,
+        width_in,
+        height_in,
+        args.cover_dpi,
+    )
 
     data = {
         "paper": args.paper,
@@ -288,8 +355,8 @@ def main():
         "width_mm": round(to_mm(width_in), 2),
         "height_mm": round(to_mm(height_in), 2),
     }
-    if cover_image_info:
-        data["cover_image"] = cover_image_info
+    if cover_image_path:
+        data["cover_image"] = cover_image_path
     write_report(args.out, data)
     write_template_pdf(
         args.out,
@@ -299,7 +366,7 @@ def main():
         spine_in,
         width_in,
         height_in,
-        background_image=background_rel,
+        background_image=cover_image_path,
     )
 
 
