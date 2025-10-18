@@ -30,11 +30,29 @@ import trafilatura
 
 PROMPT_PATH = Path("research/prompts/notes.md")
 TOPICS_PATH = Path("research/topics.yaml")
+LEGACY_TOPICS_PATH = Path("research/topics/topics.yaml")
 NOTES_DIR = Path("research/notes")
 SOURCES_DIR = Path("research/sources")
 MAX_RESULTS = 5
 USE_LLM = os.getenv("USE_LLM", "0") == "1"
 MODEL_NAME = os.getenv("OLLAMA_MODEL", "phi3:mini")
+
+DEFAULT_TOPICS_YAML = """# research/topics.yaml
+# Gabarit minimal pour lancer la collecte web.
+actes:
+  - acte: "I"
+    chapitres:
+      - id: "ch01"
+        titre: "Sujet de démonstration"
+        live_web: false
+        sujets:
+          - "exemple de requête"
+"""
+
+DEFAULT_PROMPT_MD = """# Notes de recherche
+
+> Ajoutez ici vos consignes de synthèse et annotations.
+"""
 
 
 def slugify(value: str) -> str:
@@ -106,10 +124,27 @@ def summarize(prompt: str, joined_text: str) -> str:
     return output
 
 
-def ensure_files() -> None:
-    """Vérifie la présence des répertoires de sortie."""
-    NOTES_DIR.mkdir(parents=True, exist_ok=True)
-    SOURCES_DIR.mkdir(parents=True, exist_ok=True)
+def ensure_research_scaffold() -> None:
+    """Garantit la présence des répertoires et fichiers nécessaires."""
+    for directory in {NOTES_DIR, SOURCES_DIR, PROMPT_PATH.parent}:
+        directory.mkdir(parents=True, exist_ok=True)
+
+    if not TOPICS_PATH.exists():
+        if LEGACY_TOPICS_PATH.exists():
+            TOPICS_PATH.write_text(
+                LEGACY_TOPICS_PATH.read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            print(
+                f"[research] topics.yaml introuvable → copié depuis {LEGACY_TOPICS_PATH}"
+            )
+        else:
+            TOPICS_PATH.write_text(DEFAULT_TOPICS_YAML, encoding="utf-8")
+            print(f"[research] gabarit créé : {TOPICS_PATH}")
+
+    if not PROMPT_PATH.exists():
+        PROMPT_PATH.write_text(DEFAULT_PROMPT_MD, encoding="utf-8")
+        print(f"[research] gabarit créé : {PROMPT_PATH}")
 
 
 def load_prompt() -> str:
@@ -141,11 +176,12 @@ def build_source_filename(acte_id: str, chapter: dict) -> Path:
 
 
 def main() -> None:
-    ensure_files()
+    ensure_research_scaffold()
     if not TOPICS_PATH.exists():
-        raise SystemExit("Le fichier research/topics.yaml est introuvable.")
+        print("[research] Impossible de localiser topics.yaml ; étape ignorée.")
+        return
 
-    config = yaml.safe_load(TOPICS_PATH.read_text(encoding="utf-8"))
+    config = yaml.safe_load(TOPICS_PATH.read_text(encoding="utf-8")) or {}
     prompt = load_prompt()
 
     for acte_id, chapter in iter_chapters(config):
