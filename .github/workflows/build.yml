@@ -24,7 +24,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pillow
+          pip install -r requirements.txt
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
@@ -55,6 +55,12 @@ jobs:
 
       - name: Normalize Unicode (NFC)
         run: python3 scripts/normalize_unicode.py
+
+      - name: Research preflight (offline)
+        env:
+          USE_LLM: "0"
+        run: |
+          python3 scripts/research.py
 
       - name: Smoke-test Unicode thin spaces (XeLaTeX)
         run: |
@@ -109,34 +115,3 @@ jobs:
         with:
           name: book-artifacts
           path: dist/
-
-research:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[run-research]')
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dépendances de recherche
-        run: |
-          python -m pip install --upgrade pip
-          pip install duckduckgo-search trafilatura beautifulsoup4 pyyaml
-
-      - name: Générer les notes (mode sans LLM)
-        env:
-          USE_LLM: "0"
-        run: |
-          python scripts/research.py
-
-      - name: Upload notes de recherche
-        uses: actions/upload-artifact@v4
-        with:
-          name: research-notes
-          path: |
-            research/notes/*.md
