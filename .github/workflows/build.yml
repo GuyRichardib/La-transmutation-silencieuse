@@ -21,6 +21,11 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pillow
+
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
@@ -32,9 +37,7 @@ jobs:
             texlive-xetex \
             texlive-latex-recommended \
             texlive-pictures \
-            texlive-graphics \
             texlive-latex-extra \
-            texlive-pictures \
             texlive-fonts-recommended \
             texlive-fonts-extra \
             fonts-ebgaramond \
@@ -42,7 +45,7 @@ jobs:
           sudo fc-cache -f -v
           kpsewhich microtype.sty
           kpsewhich newunicodechar.sty
-          kpsewhich pgfbase.sty
+          kpsewhich pgf.sty
 
       - name: Preflight - verify @include targets
         run: python3 scripts/verify_includes.py .
@@ -89,7 +92,8 @@ jobs:
         run: |
           PAPER="${KDP_PAPER:-cream}"
           TRIM="${KDP_TRIM:-6x9}"
-          python3 scripts/kdp_cover.py --pdf dist/book.pdf --paper "$PAPER" --trim "$TRIM" --bleed 0.125 --out dist
+          python3 scripts/kdp_cover.py --pdf dist/book.pdf --paper "$PAPER" --trim "$TRIM" --bleed 0.125 --out dist \
+            --cover-image assets/kdp/cover-art.png --cover-dpi 300
           echo "------"
           cat dist/kdp_cover_report.txt
           echo "------"
