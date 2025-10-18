@@ -108,15 +108,6 @@ def write_report(outdir, data):
     """).strip()
     cover_image = data.get("cover_image")
     if cover_image:
-        orientation = cover_image.get("exif_orientation")
-        if orientation is None or orientation in (0, 1):
-            orientation_note = "aucune rotation" if not cover_image.get("exif_orientation_applied") else "rotation appliquée"
-            orientation_display = "n/a"
-        else:
-            orientation_display = str(orientation)
-            orientation_note = (
-                "rotation appliquée" if cover_image.get("exif_orientation_applied") else "déjà correcte"
-            )
         txt += textwrap.dedent(
             f"""
 
@@ -126,7 +117,6 @@ def write_report(outdir, data):
       - Résolution cible: {cover_image['width_px']} px × {cover_image['height_px']} px @ {cover_image['dpi']} DPI
       - Ratio original: {cover_image['original_ratio']:.4f} — Ratio cible: {cover_image['target_ratio']:.4f}
       - Ajustement: {'recadrage centré' if cover_image['cropped'] else 'redimensionnement'}
-      - Orientation EXIF: {orientation_display} ({orientation_note})
     """.rstrip()
         )
     with open(os.path.join(outdir, "kdp_cover_report.txt"), "w", encoding="utf-8") as f:
@@ -172,88 +162,7 @@ def _fmt(num: float) -> str:
     return f"{num:.5f}".rstrip("0").rstrip(".")
 
 
-def prepare_cover_image(
-    image_path: Path,
-    outdir: Path,
-    target_width_in: float,
-    target_height_in: float,
-    dpi: int,
-) -> dict:
-    try:
-        from PIL import Image, ImageOps
-    except ImportError as exc:  # pragma: no cover - optional dependency
-        raise SystemExit(
-            "Pillow est requis pour --cover-image. Installez-le via 'pip install pillow'."
-        ) from exc
-
-    if dpi <= 0:
-        raise SystemExit("La valeur de --cover-dpi doit être strictement positive.")
-
-    outdir.mkdir(parents=True, exist_ok=True)
-
-    with Image.open(image_path) as img:
-        original_mode = img.mode
-        raw_w, raw_h = img.size
-
-        orientation_tag = 0x0112  # EXIF orientation
-        orientation = None
-        try:
-            exif = img.getexif()  # type: ignore[attr-defined]
-        except Exception:  # pragma: no cover - some formats disable EXIF access
-            exif = None
-        if exif:
-            orientation = exif.get(orientation_tag)
-
-        exif_applied = False
-        if hasattr(ImageOps, "exif_transpose"):
-            corrected = ImageOps.exif_transpose(img)
-            if corrected is not img:
-                img = corrected
-                exif_applied = orientation not in (None, 0, 1)
-        orig_w, orig_h = img.size
-        target_ratio = target_width_in / target_height_in
-        orig_ratio = orig_w / orig_h if orig_h else 0
-        target_px_w = max(int(round(target_width_in * dpi)), 1)
-        target_px_h = max(int(round(target_height_in * dpi)), 1)
-
-        # Use center crop + resize to enforce exact ratio
-        method = Image.LANCZOS if hasattr(Image, "LANCZOS") else Image.BICUBIC
-        fitted = ImageOps.fit(img, (target_px_w, target_px_h), method=method, centering=(0.5, 0.5))
-        if fitted.mode not in ("RGB", "RGBA"):
-            fitted = fitted.convert("RGB")
-
-        output_path = outdir / "cover-background.png"
-        fitted.save(output_path, dpi=(dpi, dpi))
-
-    return {
-        "source": str(image_path),
-        "output": output_path.name,
-        "dpi": dpi,
-        "width_px": target_px_w,
-        "height_px": target_px_h,
-        "original_width_px": orig_w,
-        "original_height_px": orig_h,
-        "source_width_px": raw_w,
-        "source_height_px": raw_h,
-        "original_ratio": round(orig_ratio, 4) if orig_h else 0.0,
-        "target_ratio": round(target_ratio, 4),
-        "cropped": abs(orig_ratio - target_ratio) > 1e-3,
-        "original_mode": original_mode,
-        "exif_orientation": orientation,
-        "exif_orientation_applied": exif_applied,
-    }
-
-
-def write_template_pdf(
-    outdir,
-    trim_w_in,
-    trim_h_in,
-    bleed_in,
-    spine_in,
-    width_in,
-    height_in,
-    background_image: Optional[str] = None,
-):
+def write_template_pdf(outdir, trim_w_in, trim_h_in, bleed_in, spine_in, width_in, height_in):
     # Pre-compute key coordinates (in inches) so TikZ only receives literals and
     # avoids heavy runtime arithmetic that previously exhausted TeX's save stack.
     safe_in = 0.25
@@ -265,23 +174,13 @@ def write_template_pdf(
     spine_right_x = width_in - bleed_in - trim_w_in
     spine_center_x = spine_left_x + spine_in / 2
 
-    packages = ["iftex", "fontspec", "geometry", "xcolor", "tikz"]
-    if background_image:
-        packages.append("graphicx")
-
-    pkg_tex = "\n".join(f"\\usepackage{{{pkg}}}" for pkg in packages)
-
-    background_tex = ""
-    if background_image:
-        background_tex = (
-            "%% Image de fond (plein format)\n"
-            "\\node[anchor=south west, inner sep=0] at (0,0) {\\includegraphics[width=%sin,height=%sin]{\\detokenize{%s}}};\n\n"
-            % (_fmt(width_in), _fmt(height_in), background_image)
-        )
-
     tex = rf"""
 \documentclass{{article}}
-{pkg_tex}
+\usepackage{{iftex}}
+\usepackage{{fontspec}}
+\usepackage{{geometry}}
+\usepackage{{xcolor}}
+\usepackage{{tikz}}
 \IfFileExists{{newunicodechar.sty}}{{\usepackage{{newunicodechar}}}}{{}}
 \ifdefined\newunicodechar
   \newunicodechar{{^^^^00a0}}{{\nobreakspace}}
@@ -297,7 +196,7 @@ def write_template_pdf(
 \begin{{document}}
 \begin{{tikzpicture}}[remember picture,overlay,x=1in,y=1in]
 
-{background_tex}% Outer page (bleed edge)
+% Outer page (bleed edge)
 \draw[gray!50, line width=0.3pt] (0,0) rectangle ({_fmt(width_in)},{_fmt(height_in)});
 
 % Trim box (inside bleed)
@@ -320,7 +219,7 @@ def write_template_pdf(
 \node[anchor=north west, scale=0.9] at ({_fmt(bleed_in + 0.1)},{_fmt(height_in - bleed_in - 0.1)}) {{%
   Cover {width_in:.3f} in × {height_in:.3f} in — Spine {spine_in:.3f} in — Bleed {bleed_in:.3f} in}};
 \node[anchor=north, scale=0.8, blue!70] at ({_fmt(spine_center_x)},{_fmt(height_in - 0.25)}) {{Spine center}};
-\node[anchor=south east, scale=0.7, gray!60] at ({_fmt(width_in - 0.05)},{_fmt(0.05)}) {{Generated by kdp\_cover.py}};
+\node[anchor=south east, scale=0.7, gray!60] at ({_fmt(width_in - 0.05)},{_fmt(0.05)}) {{Generated by kdp_cover.py}};
 \end{{tikzpicture}}
 \end{{document}}
 """

@@ -24,7 +24,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pillow pypdf
+          pip install pillow
 
       - name: Install Pandoc
         uses: r-lib/actions/setup-pandoc@v2
