@@ -15,6 +15,7 @@ import subprocess
 import sys
 import textwrap
 from pathlib import Path
+from typing import Optional
 
 THICKNESS_IN = {  # per-page thickness (inches)
     "white": 0.002252,   # KDP white B/W
@@ -53,6 +54,7 @@ def write_report(outdir, data):
     # JSON
     with open(os.path.join(outdir, "kdp_cover.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
+        f.write("\n")
     # TXT
     txt = textwrap.dedent(f"""
     === KDP Cover Calculation ===
@@ -70,6 +72,19 @@ def write_report(outdir, data):
       - Formules et épaisseurs officielles KDP.
       - Le gabarit PDF 'cover-template.pdf' inclut lignes de coupe, dos, zones sûres, centre du dos.
     """).strip()
+    cover_image = data.get("cover_image")
+    if cover_image:
+        txt += textwrap.dedent(
+            f"""
+
+    Image de couverture:
+      - Source: {cover_image['source']}
+      - Sortie: {cover_image['output']}
+      - Résolution cible: {cover_image['width_px']} px × {cover_image['height_px']} px @ {cover_image['dpi']} DPI
+      - Ratio original: {cover_image['original_ratio']:.4f} — Ratio cible: {cover_image['target_ratio']:.4f}
+      - Ajustement: {'recadrage centré' if cover_image['cropped'] else 'redimensionnement'}
+    """.rstrip()
+        )
     with open(os.path.join(outdir, "kdp_cover_report.txt"), "w", encoding="utf-8") as f:
         f.write(txt + "\n")
     print(txt)
@@ -194,6 +209,13 @@ def main():
     ap.add_argument("--paper", default="cream", choices=list(THICKNESS_IN.keys()))
     ap.add_argument("--bleed", type=float, default=DEFAULT_BLEED_IN)
     ap.add_argument("--out", default="dist", help="Output directory")
+    ap.add_argument("--cover-image", help="Optional cover artwork to fit to the full template width/height.")
+    ap.add_argument(
+        "--cover-dpi",
+        type=int,
+        default=300,
+        help="Target DPI when resampling the cover artwork (default: 300).",
+    )
     args = ap.parse_args()
 
     # Parse trim
@@ -204,6 +226,20 @@ def main():
 
     pages = pages_from_pdf(args.pdf)
     spine_in, width_in, height_in = compute(trim_w_in, trim_h_in, args.paper, pages, args.bleed)
+
+    outdir_path = Path(args.out)
+
+    cover_image_info = None
+    background_rel = None
+    if args.cover_image:
+        cover_image_info = prepare_cover_image(
+            Path(args.cover_image),
+            outdir_path,
+            width_in,
+            height_in,
+            args.cover_dpi,
+        )
+        background_rel = str((outdir_path / cover_image_info["output"]).resolve())
 
     data = {
         "paper": args.paper,
@@ -218,8 +254,19 @@ def main():
         "width_mm": round(to_mm(width_in), 2),
         "height_mm": round(to_mm(height_in), 2),
     }
+    if cover_image_info:
+        data["cover_image"] = cover_image_info
     write_report(args.out, data)
-    write_template_pdf(args.out, trim_w_in, trim_h_in, args.bleed, spine_in, width_in, height_in)
+    write_template_pdf(
+        args.out,
+        trim_w_in,
+        trim_h_in,
+        args.bleed,
+        spine_in,
+        width_in,
+        height_in,
+        background_image=background_rel,
+    )
 
 
 if __name__ == "__main__":
